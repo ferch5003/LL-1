@@ -49,6 +49,8 @@ public class Interfaz extends javax.swing.JFrame {
         cadena = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         escogerGram = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        gramaticaSV = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -139,20 +141,36 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addComponent(tituloGram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(gramOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                .addComponent(gramOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Gramatica sin vicios");
+
+        gramaticaSV.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 930, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(gramaticaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 437, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(gramaticaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(344, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -178,12 +196,26 @@ public class Interfaz extends javax.swing.JFrame {
             BufferedReader br = new BufferedReader(fr);
             Gramatica gramatica = new Gramatica(br);
             String textoGramatica = "<html>";
-            for (String llave : gramatica.getProducciones().keySet()) {
+            for (String llave : gramatica.getNoTerminales()) {
                 String valor = gramatica.getProducciones().get(llave);
-                textoGramatica += "<p>" + llave + "->" + valor + "</p>";
+                String[] producciones = valor.split(" ");
+                for (String produccion : producciones) {
+                    textoGramatica += "<p>" + llave + "->" + produccion + "</p>";
+                }
             }
-            textoGramatica +="</html>";
+            textoGramatica += "</html>";
             gramOriginal.setText(textoGramatica);
+            GSVicio gSVicio = new GSVicio(gramatica);
+            String textoGramaticaSV = "<html>";
+            for (String llave : gSVicio.getNoTerminales()) {
+                String valor = gSVicio.getProducciones().get(llave);
+                String[] producciones = valor.split(" ");
+                for (String produccion : producciones) {
+                    textoGramaticaSV += "<p>" + llave + "->" + produccion + "</p>";
+                }
+            }
+            textoGramaticaSV += "</html>";
+            gramaticaSV.setText(textoGramaticaSV);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -230,9 +262,11 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextField cadena;
     private javax.swing.JButton escogerGram;
     private javax.swing.JLabel gramOriginal;
+    private javax.swing.JLabel gramaticaSV;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel tituloGram;

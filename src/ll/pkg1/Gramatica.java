@@ -35,10 +35,10 @@ public class Gramatica {
         String linea;
         String gramaticaConvertida = "";
         while ((linea = gramatica.readLine()) != null) {
-            gramaticaConvertida += linea + ";";
+            gramaticaConvertida += linea + " ";
         }
 
-        String[] arregloGramatica = gramaticaConvertida.split(";");
+        String[] arregloGramatica = gramaticaConvertida.split(" ");
 
         buscarTerminales(arregloGramatica);
         buscarNoTerminales(arregloGramatica);
@@ -51,32 +51,16 @@ public class Gramatica {
         return terminales;
     }
 
-    public void setTerminales(ArrayList<String> terminales) {
-        this.terminales = terminales;
-    }
-
     public ArrayList<String> getNoTerminales() {
         return noTerminales;
-    }
-
-    public void setNoTerminales(ArrayList<String> noTerminales) {
-        this.noTerminales = noTerminales;
     }
 
     public String getnTInicial() {
         return nTInicial;
     }
 
-    public void setnTInicial(String nTInicial) {
-        this.nTInicial = nTInicial;
-    }
-
     public HashMap<String, String> getProducciones() {
         return producciones;
-    }
-
-    public void setProducciones(HashMap<String, String> producciones) {
-        this.producciones = producciones;
     }
 
     private void buscarTerminales(String[] gramatica) {
@@ -109,7 +93,7 @@ public class Gramatica {
             if (!this.producciones.containsKey(expresiones[0])) {
                 this.producciones.put(expresiones[0], expresiones[1]);
             } else {
-                String alternancia = this.producciones.get(expresiones[0]) + "|" + expresiones[1];
+                String alternancia = this.producciones.get(expresiones[0]) + " " + expresiones[1];
                 this.producciones.put(expresiones[0], alternancia);
             }
         }

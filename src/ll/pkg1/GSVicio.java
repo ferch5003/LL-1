@@ -25,12 +25,11 @@ public class GSVicio {
     public GSVicio(Gramatica gramatica) {
         this.terminales = gramatica.getTerminales();
         this.nTInicial = gramatica.getnTInicial();
-
         this.noTerminales = gramatica.getNoTerminales();
         this.producciones = new HashMap<>();
 
         gramatica.getProducciones().forEach((noTerminal, produccionesNT) -> {
-            String[] producciones = produccionesNT.split("\\ ");
+            String[] producciones = produccionesNT.split(" ");
             if (esRecursivo(noTerminal, producciones)) {
                 quitarRecursividad(noTerminal, producciones);
             } else {

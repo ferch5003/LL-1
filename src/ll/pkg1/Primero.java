@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 public class Primero {
 
     private HashMap<String, Set<String>> primeros;
+    private HashMap<String, HashMap<String, Set<String>>> valoresM;
     private HashMap<String, String> producciones;
     private ArrayList<String> noTerminales;
     private HashMap<String, Set<String>> nTPrimeros;
@@ -27,6 +28,7 @@ public class Primero {
     public Primero(GSVicio gSVicio) {
         this.primeros = new HashMap<>();
         this.nTPrimeros = new HashMap<>();
+        this.valoresM = new HashMap<>();
         this.producciones = new HashMap<>();
         this.noTerminales = gSVicio.getNoTerminales();
 
@@ -34,27 +36,36 @@ public class Primero {
             this.producciones.put(noTerminal, producciones);
         });
 
+        construirValoresM(gSVicio);
+
         construirNTPrimeros(gSVicio);
 
         construirProducciones(gSVicio);
 
         construirPrimero(gSVicio);
 
-        verifCiclos();
+        verifCiclos(gSVicio);
 
-        verifTerceraRegla(gSVicio);
-    }
-
-    public ArrayList<String> getNoTerminales() {
-        return noTerminales;
+        verifEpsilon(gSVicio);
     }
 
     public HashMap<String, Set<String>> getPrimeros() {
         return primeros;
     }
 
-    public HashMap<String, String> getProducciones() {
-        return producciones;
+    public HashMap<String, HashMap<String, Set<String>>> getValoresM() {
+        return valoresM;
+    }
+
+    private void construirValoresM(GSVicio gSVicio) {
+        for (String noTerminal : gSVicio.getNoTerminales()) {
+            HashMap<String, Set<String>> valor = new HashMap<>();
+            String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
+            for (String produccion : producciones) {
+                valor.put(produccion, new HashSet<>());
+            }
+            this.valoresM.put(noTerminal, valor);
+        }
     }
 
     private void construirNTPrimeros(GSVicio gSVicio) {
@@ -105,7 +116,7 @@ public class Primero {
         }
     }
 
-    private void verifTerceraRegla(GSVicio gSVicio) {
+    private void verifEpsilon(GSVicio gSVicio) {
         gSVicio.getProducciones().forEach((noTerminal, producciones) -> {
             int epsilon = 0;
             if (!producciones.isEmpty()) {
@@ -126,8 +137,8 @@ public class Primero {
         });
     }
 
-    private void verifCiclos() {
-        int ultimaPos = this.getNoTerminales().size() - 1;
+    private void verifCiclos(GSVicio gSVicio) {
+        int ultimaPos = this.noTerminales.size() - 1;
         for (int i = ultimaPos; i >= 0; i--) {
             String noTerminal = this.noTerminales.get(i);
             Set<String> ciclo = this.nTPrimeros.get(noTerminal);
@@ -135,11 +146,15 @@ public class Primero {
             Set<String> A = this.primeros.get(noTerminal);
             union.addAll(A);
             for (String simbolo : ciclo) {
-                if (esTerminal(simbolo)) {
-                    primeraRegla(noTerminal, simbolo);
-                } else {
-                    Set<String> B = this.primeros.get(simbolo);
-                    union.addAll(B);
+                Set<String> B = this.primeros.get(simbolo);
+                union.addAll(B);
+                String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
+                for (String produccion : producciones) {
+                    if (simbolo.equals(produccion.substring(0, 1))) {
+                        HashMap<String, Set<String>> valor = new HashMap<>();
+                        this.valoresM.get(noTerminal).put(produccion, B);
+                        break;
+                    }
                 }
             }
             this.primeros.get(noTerminal).addAll(union);
@@ -150,21 +165,26 @@ public class Primero {
         if (!producciones.isEmpty()) {
             String primeraCad = producciones.peek().substring(0, 1);
             if (esTerminal(primeraCad)) {
-                primeraRegla(A, primeraCad);
+                primeraRegla(A, primeraCad, producciones.peek());
                 producciones.remove();
             } else {
-                segundaRegla(A, primeraCad, producciones, producciones.peek());
+                segundaRegla(A, primeraCad);
                 producciones.remove();
             }
             calcularPrimero(A, producciones);
         }
     }
 
-    private void primeraRegla(String A, String primeraCad) {
+    private void primeraRegla(String A, String primeraCad, String produce) {
         this.primeros.get(A).add(primeraCad);
+        Set<String> terminal = new HashSet<>();
+        if (!primeraCad.equals("&")) {
+            terminal.add(primeraCad);
+        }
+        this.valoresM.get(A).put(produce, terminal);
     }
 
-    private void segundaRegla(String A, String primeraCad, Queue<String> producciones, String produccion) {
+    private void segundaRegla(String A, String primeraCad) {
         if (!this.producciones.get(primeraCad).isEmpty()) {
             String[] prodB = this.producciones.get(primeraCad).split(" ");
             Queue<String> colaProd = new LinkedList<>();

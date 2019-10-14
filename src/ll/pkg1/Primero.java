@@ -27,18 +27,22 @@ public class Primero {
     public Primero(GSVicio gSVicio) {
         this.primeros = new HashMap<>();
         this.nTPrimeros = new HashMap<>();
-        this.producciones = gSVicio.getProducciones();
+        this.producciones = new HashMap<>();
         this.noTerminales = gSVicio.getNoTerminales();
 
-        construirCiclos(gSVicio);
+        gSVicio.getProducciones().forEach((noTerminal, producciones) -> {
+            this.producciones.put(noTerminal, producciones);
+        });
+
+        construirNTPrimeros(gSVicio);
 
         construirProducciones(gSVicio);
 
         construirPrimero(gSVicio);
 
-        verifTerceraRegla();
-
         verifCiclos();
+
+        verifTerceraRegla(gSVicio);
     }
 
     public ArrayList<String> getNoTerminales() {
@@ -53,7 +57,7 @@ public class Primero {
         return producciones;
     }
 
-    private void construirCiclos(GSVicio gSVicio) {
+    private void construirNTPrimeros(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
             this.nTPrimeros.put(noTerminal, new HashSet<>());
         }
@@ -62,19 +66,27 @@ public class Primero {
     private void construirProducciones(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
             this.primeros.put(noTerminal, new HashSet<>());
-            for (String noTermAux : gSVicio.getNoTerminales()) {
-                String[] producciones = gSVicio.getProducciones().get(noTermAux).split(" ");
-                for (String produccion : producciones) {
-                    String primeraPos = produccion.substring(0, 1);
-                    if (primeraPos.equals(noTerminal)) {
-                        String[] prodB = gSVicio.getProducciones().get(noTerminal).split(" ");
-                        for (String simbolo : prodB) {
-                            if (simbolo.substring(0, 1).equals(noTermAux)) {
-                                this.nTPrimeros.get(noTerminal).add(noTermAux);
-                                this.nTPrimeros.get(noTermAux).add(noTerminal);
-                            }
+            String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
+            for (String produccion : producciones) {
+                String simbolo = produccion.substring(0, 1);
+                if (!esTerminal(simbolo)) {
+                    String nProd = "";
+                    String[] aProd = this.producciones.get(noTerminal).split(" ");
+                    for (String prod : aProd) {
+                        if (!simbolo.equals(prod.substring(0, 1))) {
+                            nProd += prod + " ";
                         }
                     }
+                    nProd = nProd.trim();
+                    if (this.producciones.get(simbolo).contains("&")) {
+                        for (char s : produccion.toCharArray()) {
+                            String simb = Character.toString(s);
+                            this.nTPrimeros.get(noTerminal).add(simb);
+                        }
+                    } else {
+                        this.nTPrimeros.get(noTerminal).add(simbolo);
+                    }
+                    this.producciones.put(noTerminal, nProd);
                 }
             }
         }
@@ -82,49 +94,56 @@ public class Primero {
 
     private void construirPrimero(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
-            String produccion = gSVicio.getProducciones().get(noTerminal);
-            String[] producciones = produccion.split(" ");
+            String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
             Queue<String> colaProd = new LinkedList<>();
             for (String prod : producciones) {
-                colaProd.add(prod);
+                if (!prod.isEmpty()) {
+                    colaProd.add(prod);
+                }
             }
             calcularPrimero(noTerminal, colaProd);
         }
     }
 
-    private void verifTerceraRegla() {
-        this.producciones.forEach((k, v) -> {
+    private void verifTerceraRegla(GSVicio gSVicio) {
+        gSVicio.getProducciones().forEach((noTerminal, producciones) -> {
             int epsilon = 0;
-            if (!esTerminal(v.substring(0, 1))) {
-                for (char a : v.toCharArray()) {
-                    String simbolo = Character.toString(a);
-                    if (!esTerminal(simbolo)) {
-                        if (this.primeros.get(simbolo).contains("&")) {
-                            epsilon++;
+            if (!producciones.isEmpty()) {
+                if (!esTerminal(producciones.substring(0, 1))) {
+                    for (char a : producciones.toCharArray()) {
+                        String simbolo = Character.toString(a);
+                        if (!esTerminal(simbolo)) {
+                            if (this.primeros.get(simbolo).contains("&")) {
+                                epsilon++;
+                            }
                         }
                     }
-                }
-                if (epsilon < v.length()) {
-                    this.primeros.get(k).remove("&");
+                    if (epsilon < producciones.length()) {
+                        this.primeros.get(noTerminal).remove("&");
+                    }
                 }
             }
         });
     }
 
     private void verifCiclos() {
-        this.nTPrimeros.forEach((noTerminal, ciclo) -> {
+        int ultimaPos = this.getNoTerminales().size() - 1;
+        for (int i = ultimaPos; i >= 0; i--) {
+            String noTerminal = this.noTerminales.get(i);
+            Set<String> ciclo = this.nTPrimeros.get(noTerminal);
             Set<String> union = new HashSet<>();
             Set<String> A = this.primeros.get(noTerminal);
             union.addAll(A);
-            for (String noTerm : ciclo) {
-                Set<String> B = this.primeros.get(noTerm);
-                union.addAll(B);
-            }
-            for (String noTerm : ciclo) {
-                this.primeros.get(noTerm).addAll(union);
+            for (String simbolo : ciclo) {
+                if (esTerminal(simbolo)) {
+                    primeraRegla(noTerminal, simbolo);
+                } else {
+                    Set<String> B = this.primeros.get(simbolo);
+                    union.addAll(B);
+                }
             }
             this.primeros.get(noTerminal).addAll(union);
-        });
+        }
     }
 
     private void calcularPrimero(String A, Queue<String> producciones) {
@@ -161,33 +180,6 @@ public class Primero {
                 calcularPrimero(primeraCad, colaProd);
                 Set<String> B = this.primeros.get(primeraCad);
                 this.primeros.get(A).addAll(B);
-            } else {
-                terceraRegla(A, produccion);
-            }
-        }
-    }
-
-    private void terceraRegla(String A, String produccion) {
-        if (produccion.length() > 1) {
-            for (char a : produccion.toCharArray()) {
-                String simbolo = Character.toString(a);
-                if (esTerminal(simbolo)) {
-                    primeraRegla(A, simbolo);
-                } else {
-                    String[] prodC = this.producciones.get(simbolo).split(" ");
-                    Queue<String> colaProdB = new LinkedList<>();
-                    for (String prod : prodC) {
-                        String primeraPos = prod.substring(0, 1);
-                        if (esTerminal(primeraPos)) {
-                            colaProdB.add(prod);
-                        } else if (!this.nTPrimeros.get(primeraPos).contains(simbolo)) {
-                            colaProdB.add(prod);
-                        }
-                    }
-                    calcularPrimero(simbolo, colaProdB);
-                    Set<String> B = this.primeros.get(simbolo);
-                    this.primeros.get(A).addAll(B);
-                }
             }
         }
     }

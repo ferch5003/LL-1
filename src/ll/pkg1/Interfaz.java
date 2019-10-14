@@ -234,11 +234,17 @@ public class Interfaz extends javax.swing.JFrame {
             }
             textoGramaticaSV += "</html>";
             gramaticaSV.setText(textoGramaticaSV);
-            Primero primero = new Primero(gSVicio);
+            Primero primeros = new Primero(gSVicio);
             String textoPrimYSigte = "<html>";
-            for (String llave : primero.getNoTerminales()) {
-                Set<String> conjunto = primero.getPrimeros().get(llave);
-                textoPrimYSigte += "<p>Primero(" + llave + ")=" + conjunto + "</p>";
+            for (String llave : gSVicio.getNoTerminales()) {
+                Set<String> conjunto = primeros.getPrimeros().get(llave);
+                textoPrimYSigte += "<p>PRIMERO(" + llave + ")=" + conjunto + "</p>";
+            }
+            Siguiente siguientes = new Siguiente(gSVicio, primeros);
+            textoPrimYSigte += "<br/>";
+            for (String llave : gSVicio.getNoTerminales()) {
+                Set<String> conjunto = siguientes.getSiguientes().get(llave);
+                textoPrimYSigte += "<p>SIGUIENTE(" + llave + ")=" + conjunto + "</p>";
             }
             textoPrimYSigte += "</html>";
             primYSigte.setText(textoPrimYSigte);

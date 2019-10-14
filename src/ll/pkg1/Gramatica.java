@@ -35,6 +35,7 @@ public class Gramatica {
         String linea;
         String gramaticaConvertida = "";
         while ((linea = gramatica.readLine()) != null) {
+            linea = linea.trim();
             gramaticaConvertida += linea + " ";
         }
 

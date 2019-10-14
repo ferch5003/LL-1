@@ -38,8 +38,6 @@ public class GSVicio {
             }
         });
 
-        HashMap<String, String> auxProducciones = new HashMap<>();
-
         llamadaFactorizacion();
     }
 
@@ -65,10 +63,10 @@ public class GSVicio {
                 beta.add(produccion);
             }
         }
-        asignarNRecursivos(A, producciones, alfa, beta);
+        asignarNRecursivos(A, alfa, beta);
     }
 
-    private void asignarNRecursivos(String A, String[] producciones, ArrayList<String> alfa, ArrayList<String> beta) {
+    private void asignarNRecursivos(String A, ArrayList<String> alfa, ArrayList<String> beta) {
         String AP = A + "'";
         String noRA = "";
         for (String produccion : beta) {
@@ -91,7 +89,7 @@ public class GSVicio {
         for (String noTerminal : this.noTerminales) {
             String produccionesNT = this.producciones.get(noTerminal);
             Set<Integer> indicesFact = new HashSet<>();
-            String[] producciones = produccionesNT.split("\\ ");
+            String[] producciones = produccionesNT.split(" ");
             do {
                 indicesFact = esFactorizable(noTerminal, producciones);
                 if (!indicesFact.isEmpty()) {
@@ -100,9 +98,6 @@ public class GSVicio {
                     break;
                 } else {
                     factorizado = false;
-                }
-                for (Integer pos : indicesFact) {
-                    System.out.println("Posicion: " + pos);
                 }
             } while (!indicesFact.isEmpty());
             if (factorizado) {

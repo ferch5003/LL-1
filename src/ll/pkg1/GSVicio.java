@@ -38,6 +38,24 @@ public class GSVicio {
         });
 
         llamadaFactorizacion();
+
+        construirTerminales();
+    }
+
+    private void construirTerminales() {
+        this.terminales = new ArrayList<>();
+        for (String noTerminal : this.noTerminales) {
+            String[] gramatica = this.producciones.get(noTerminal).split(" ");
+            for (String expresion : gramatica) {
+                String cadenaTerminales = expresion.replaceAll("([A-Z]'*)", "");
+                for (int i = 0; i < cadenaTerminales.length(); i++) {
+                    String simbolo = cadenaTerminales.substring(i, i + 1);
+                    if (!simbolo.equals("&") && !this.terminales.contains(simbolo)) {
+                        this.terminales.add(simbolo);
+                    }
+                }
+            }
+        }
     }
 
     private boolean esRecursivo(String noTerminal, String[] producciones) {

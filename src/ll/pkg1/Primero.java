@@ -47,6 +47,10 @@ public class Primero {
         verifCiclos(gSVicio);
 
         verifEpsilon(gSVicio);
+        
+        this.valoresM.forEach((k,v)->{
+            System.out.println("k: " + k + "\nv: " + v);
+        });
     }
 
     public HashMap<String, Set<String>> getPrimeros() {
@@ -89,10 +93,15 @@ public class Primero {
                         }
                     }
                     nProd = nProd.trim();
+                    // Si A->BCDEfG, B contiene & en producciones y n > 1, entonces PRIM(A) 
+                    // contiene PRIM(B) - PRIM(E) y f
                     if (this.producciones.get(simbolo).contains("&")) {
                         for (char s : produccion.toCharArray()) {
                             String simb = Character.toString(s);
                             this.nTPrimeros.get(noTerminal).add(simb);
+                            if (esTerminal(simb)) {
+                                break;
+                            }
                         }
                     } else {
                         this.nTPrimeros.get(noTerminal).add(simbolo);
@@ -146,13 +155,17 @@ public class Primero {
             Set<String> A = this.primeros.get(noTerminal);
             union.addAll(A);
             for (String simbolo : ciclo) {
-                Set<String> B = this.primeros.get(simbolo);
+                Set<String> B = new HashSet<>();
+                if (esTerminal(simbolo)) {
+                    B.add(simbolo);
+                } else {
+                    B = this.primeros.get(simbolo);
+                }
                 union.addAll(B);
                 String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
                 for (String produccion : producciones) {
                     if (simbolo.equals(produccion.substring(0, 1))) {
-                        HashMap<String, Set<String>> valor = new HashMap<>();
-                        this.valoresM.get(noTerminal).put(produccion, B);
+                        this.valoresM.get(noTerminal).put(produccion, union);
                         break;
                     }
                 }

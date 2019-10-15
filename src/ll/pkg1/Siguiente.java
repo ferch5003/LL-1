@@ -72,6 +72,32 @@ public class Siguiente {
                                 }
                                 Set<String> conjunto = primeros.getPrimeros().get(beta);
                                 if (conjunto.contains("&")) {
+                                    String restante = produccion.substring(produccion.indexOf(beta),
+                                            produccion.length());
+                                    String primeraPos = Character.toString(restante.charAt(0));
+                                    if (!esTerminal(primeraPos)) {
+                                        for (int i = 0; i < restante.length(); i++) {
+                                            String B = "";
+                                            if (restante.substring(i, i + 1).equals("'")) {
+                                                break;
+                                            }
+                                            if (restante.contains("'")) {
+                                                if (restante.substring(i + 1, i + 2).equals("'")) {
+                                                    B = restante.substring(i, i + 2);
+                                                } else {
+                                                    B = restante.substring(i, i + 1);
+                                                }
+                                            } else {
+                                                B = restante.substring(i, i + 1);
+                                            }
+                                            if (esTerminal(B)) {
+                                                this.siguientes.get(noTerminal).add(B);
+                                                break;
+                                            } else {
+                                                conjunto.addAll(primeros.getPrimeros().get(B));
+                                            }
+                                        }
+                                    }
                                     conjunto.remove("&");
                                     this.siguientes.get(noTerminal).addAll(conjunto);
                                     this.nTSiguientes.get(noTerminal).add(noTermAux);
@@ -90,20 +116,22 @@ public class Siguiente {
     }
 
     private void calcularSiguiente(GSVicio gSVicio) {
-        for (String noTerminal : gSVicio.getNoTerminales()) {
-            Set<String> ciclo = this.nTSiguientes.get(noTerminal);
-            Set<String> union = new HashSet<>();
-            Set<String> A = this.siguientes.get(noTerminal);
-            union.addAll(A);
-            for (String simbolo : ciclo) {
-                Set<String> B = this.siguientes.get(simbolo);
-                union.addAll(B);
+        for (int j = 0; j < 2; j++) {
+            for (String noTerminal : gSVicio.getNoTerminales()) {
+                Set<String> ciclo = this.nTSiguientes.get(noTerminal);
+                Set<String> union = new HashSet<>();
+                Set<String> A = this.siguientes.get(noTerminal);
+                union.addAll(A);
+                for (String simbolo : ciclo) {
+                    Set<String> B = this.siguientes.get(simbolo);
+                    union.addAll(B);
+                }
+                this.siguientes.get(noTerminal).addAll(union);
             }
-            this.siguientes.get(noTerminal).addAll(union);
         }
     }
 
     private boolean esTerminal(String cadena) {
-        return Pattern.matches("[A-Z]", cadena) ? false : true;
+        return Pattern.matches("[A-Z]'*", cadena) ? false : true;
     }
 }

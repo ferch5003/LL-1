@@ -47,10 +47,6 @@ public class Primero {
         verifCiclos(gSVicio);
 
         verifEpsilon(gSVicio);
-        
-        this.valoresM.forEach((k,v)->{
-            System.out.println("k: " + k + "\nv: " + v);
-        });
     }
 
     public HashMap<String, Set<String>> getPrimeros() {
@@ -218,6 +214,6 @@ public class Primero {
     }
 
     private boolean esTerminal(String cadena) {
-        return Pattern.matches("[A-Z]", cadena) ? false : true;
+        return Pattern.matches("[A-Z]'*", cadena) ? false : true;
     }
 }

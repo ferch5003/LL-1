@@ -42,6 +42,16 @@ public class GSVicio {
         construirTerminales();
     }
 
+    private String asignarNuevoNTerminal() {
+        for (char A = 'A'; A <= 'Z'; A++) {
+            String noTerminal = Character.toString(A);
+            if(!this.noTerminales.contains(noTerminal)){
+                return noTerminal;
+            }
+        }
+        return "A";
+    }
+
     private void construirTerminales() {
         this.terminales = new ArrayList<>();
         for (String noTerminal : this.noTerminales) {
@@ -84,7 +94,7 @@ public class GSVicio {
     }
 
     private void asignarNRecursivos(String A, ArrayList<String> alfa, ArrayList<String> beta) {
-        String AP = A + "'";
+        String AP = asignarNuevoNTerminal();
         String noRA = "";
         for (String produccion : beta) {
             noRA += produccion + AP + " ";
@@ -184,12 +194,7 @@ public class GSVicio {
     }
 
     private void asignarFactores(String A, String[] producciones, Set<Integer> indicesFact, String cadenaMax) {
-        String AP = A;
-        int indiceA = this.noTerminales.indexOf(A);
-        while (this.producciones.containsKey(AP)) {
-            AP += "'";
-            indiceA++;
-        }
+        String AP = asignarNuevoNTerminal();
         String prodANueva = cadenaMax + AP;
         String prodAPNueva = "";
         for (int j = 0; j < producciones.length; j++) {
@@ -206,7 +211,8 @@ public class GSVicio {
         prodAPNueva = prodAPNueva.substring(0, prodAPNueva.length() - 1);
         this.producciones.put(A, prodANueva);
         this.producciones.put(AP, prodAPNueva);
-        this.noTerminales.add(indiceA, AP);
+        int indiceA = this.noTerminales.indexOf(A);
+        this.noTerminales.add(indiceA + 1, AP);
     }
 
     public ArrayList<String> getTerminales() {

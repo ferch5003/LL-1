@@ -39,6 +39,19 @@ public class Siguiente {
         return siguientes;
     }
 
+    private Set<String> construirProducciones(String produccion, String B, String A, Primero primeros) {
+        Set<String> prodConstr = new HashSet<>();
+        while (produccion.contains(B)) {
+            produccion = produccion.substring(produccion.indexOf(B) + 1, produccion.length());
+            if (produccion.equals("")) {
+                this.nTSiguientes.get(B).add(A);
+                break;
+            }
+            prodConstr.add(produccion);
+        }
+        return prodConstr;
+    }
+
     private void construirNTSiguientes(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
             this.nTSiguientes.put(noTerminal, new HashSet<>());
@@ -50,64 +63,34 @@ public class Siguiente {
 
     private void construirSiguiente(GSVicio gSVicio, Primero primeros) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
+            System.out.println("No term: " + noTerminal);
             for (String noTermAux : gSVicio.getNoTerminales()) {
                 String[] producciones = gSVicio.getProducciones().get(noTermAux).split(" ");
                 for (String produccion : producciones) {
-                    if (produccion.contains(noTerminal)) {
-                        int indiceNT = produccion.indexOf(noTerminal);
-                        int tamañoProd = produccion.length() - 1;
-                        if (produccion.contains("'")) {
-                            tamañoProd--;
-                        }
-                        if (tamañoProd > indiceNT) {
-                            // S(B) = P(beta) | S(B) = P(beta) U S(A)
-                            String beta = produccion.substring(indiceNT + 1, indiceNT + 2);
-                            if (esTerminal(beta)) {
-                                this.siguientes.get(noTerminal).add(beta);
-                            } else {
-                                if (produccion.contains("'")) {
-                                    if (produccion.substring(indiceNT + 2, indiceNT + 3).equals("'")) {
-                                        beta = produccion.substring(indiceNT + 1, produccion.length());
-                                    }
-                                }
-                                Set<String> conjunto = primeros.getPrimeros().get(beta);
-                                if (conjunto.contains("&")) {
-                                    String restante = produccion.substring(produccion.indexOf(beta),
-                                            produccion.length());
-                                    String primeraPos = Character.toString(restante.charAt(0));
-                                    if (!esTerminal(primeraPos)) {
-                                        for (int i = 0; i < restante.length(); i++) {
-                                            String B = "";
-                                            if (restante.substring(i, i + 1).equals("'")) {
-                                                break;
-                                            }
-                                            if (restante.contains("'")) {
-                                                if (restante.substring(i + 1, i + 2).equals("'")) {
-                                                    B = restante.substring(i, i + 2);
-                                                } else {
-                                                    B = restante.substring(i, i + 1);
-                                                }
-                                            } else {
-                                                B = restante.substring(i, i + 1);
-                                            }
-                                            if (esTerminal(B)) {
-                                                this.siguientes.get(noTerminal).add(B);
-                                                break;
-                                            } else {
-                                                conjunto.addAll(primeros.getPrimeros().get(B));
-                                            }
-                                        }
-                                    }
-                                    conjunto.remove("&");
-                                    this.siguientes.get(noTerminal).addAll(conjunto);
-                                    this.nTSiguientes.get(noTerminal).add(noTermAux);
+                    Set<String> prodConstr = construirProducciones(produccion, noTerminal, noTermAux, primeros);
+                    if (!prodConstr.isEmpty()) {
+                        for (String prod : prodConstr) {
+                            for (int i = 0; i < prod.length(); i++) {
+                                String simbolo = prod.substring(i, i + 1);
+                                if (esTerminal(simbolo)) {
+                                    this.siguientes.get(noTerminal).add(simbolo);
+                                    break;
                                 } else {
-                                    this.siguientes.get(noTerminal).addAll(conjunto);
+                                    Set<String> conjPrimero = primeros.getPrimeros().get(simbolo);
+                                    if (!conjPrimero.contains("&")) {
+                                        this.siguientes.get(noTerminal).addAll(conjPrimero);
+                                    } else {
+                                        System.out.println("simbolo: " + simbolo);
+                                        if (prod.length() == 1) {
+                                            this.siguientes.get(noTerminal).addAll(conjPrimero);
+                                            this.nTSiguientes.get(noTerminal).add(noTermAux);
+                                        } else {
+                                            this.siguientes.get(noTerminal).addAll(conjPrimero);
+                                        }
+                                        this.siguientes.get(noTerminal).remove("&");
+                                    }
                                 }
                             }
-                        } else {
-                            // S(B) = S(A)
-                            this.nTSiguientes.get(noTerminal).add(noTermAux);
                         }
                     }
                 }
@@ -132,6 +115,6 @@ public class Siguiente {
     }
 
     private boolean esTerminal(String cadena) {
-        return Pattern.matches("[A-Z]'*", cadena) ? false : true;
+        return Pattern.matches("[A-Z]", cadena) ? false : true;
     }
 }

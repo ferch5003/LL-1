@@ -124,18 +124,21 @@ public class Primero {
     private void verifEpsilon(GSVicio gSVicio) {
         gSVicio.getProducciones().forEach((noTerminal, producciones) -> {
             int epsilon = 0;
-            if (!producciones.isEmpty()) {
-                if (!esTerminal(producciones.substring(0, 1))) {
-                    for (char a : producciones.toCharArray()) {
-                        String simbolo = Character.toString(a);
-                        if (!esTerminal(simbolo)) {
-                            if (this.primeros.get(simbolo).contains("&")) {
-                                epsilon++;
+            if (!producciones.contains("&")) {
+                String[] produccion = producciones.split(" ");
+                for (String prod : produccion) {
+                    if (!esTerminal(prod.substring(0, 1))) {
+                        for (char a : producciones.toCharArray()) {
+                            String simbolo = Character.toString(a);
+                            if (!esTerminal(simbolo)) {
+                                if (this.primeros.get(simbolo).contains("&")) {
+                                    epsilon++;
+                                }
                             }
                         }
-                    }
-                    if (epsilon < producciones.length()) {
-                        this.primeros.get(noTerminal).remove("&");
+                        if (epsilon < producciones.length()) {
+                            this.primeros.get(noTerminal).remove("&");
+                        }
                     }
                 }
             }
@@ -214,6 +217,6 @@ public class Primero {
     }
 
     private boolean esTerminal(String cadena) {
-        return Pattern.matches("[A-Z]'*", cadena) ? false : true;
+        return Pattern.matches("[A-Z]", cadena) ? false : true;
     }
 }

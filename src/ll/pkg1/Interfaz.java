@@ -5,19 +5,20 @@
  */
 package ll.pkg1;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -29,8 +30,12 @@ public class Interfaz extends javax.swing.JFrame {
     /**
      * Creates new form Interfaz
      */
+    TablaM tablaM;
+    String S;
+
     public Interfaz() {
         initComponents();
+        this.setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -48,8 +53,8 @@ public class Interfaz extends javax.swing.JFrame {
         tituloGram = new javax.swing.JLabel();
         gramOriginal = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        cadena = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        Cadena = new javax.swing.JTextField();
+        Btn_Verificar = new javax.swing.JButton();
         escogerGram = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -57,6 +62,8 @@ public class Interfaz extends javax.swing.JFrame {
         gramaticaSV = new javax.swing.JLabel();
         JScrollPanel = new javax.swing.JScrollPane();
         JTablaM = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        JTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,31 +71,39 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(60, 60, 62));
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 254));
         jLabel1.setText("LL(1)");
 
+        tituloGram.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         tituloGram.setForeground(new java.awt.Color(255, 255, 254));
         tituloGram.setText("Gramatica original");
 
         gramOriginal.setForeground(new java.awt.Color(255, 255, 254));
         gramOriginal.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 254));
         jLabel2.setText("Cadena a verificar");
 
-        cadena.setBackground(new java.awt.Color(60, 60, 62));
-        cadena.setForeground(new java.awt.Color(255, 255, 254));
-        cadena.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
-        cadena.addActionListener(new java.awt.event.ActionListener() {
+        Cadena.setBackground(new java.awt.Color(60, 60, 62));
+        Cadena.setForeground(new java.awt.Color(255, 255, 254));
+        Cadena.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
+        Cadena.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cadenaActionPerformed(evt);
+                CadenaActionPerformed(evt);
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setForeground(new java.awt.Color(60, 63, 65));
-        jButton1.setText("Verificar");
-        jButton1.setBorder(new javax.swing.border.MatteBorder(null));
+        Btn_Verificar.setBackground(new java.awt.Color(255, 255, 255));
+        Btn_Verificar.setForeground(new java.awt.Color(60, 63, 65));
+        Btn_Verificar.setText("Verificar");
+        Btn_Verificar.setBorder(new javax.swing.border.MatteBorder(null));
+        Btn_Verificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn_VerificarActionPerformed(evt);
+            }
+        });
 
         escogerGram.setBackground(new java.awt.Color(255, 255, 255));
         escogerGram.setForeground(new java.awt.Color(60, 63, 65));
@@ -129,8 +144,8 @@ public class Interfaz extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(escogerGram, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cadena, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(Btn_Verificar, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Cadena, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(16, 16, 16))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -143,19 +158,22 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(cadena, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Cadena, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Btn_Verificar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(tituloGram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(gramOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE))
+                .addComponent(gramOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Gramatica sin vicios");
 
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Primeros y Siguientes");
 
@@ -175,6 +193,16 @@ public class Interfaz extends javax.swing.JFrame {
         ));
         JScrollPanel.setViewportView(JTablaM);
 
+        JTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Pila", "Entrada", "Salida"
+            }
+        ));
+        jScrollPane1.setViewportView(JTable);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -190,13 +218,13 @@ public class Interfaz extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(primYSigte, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(JScrollPanel))
+                    .addComponent(JScrollPanel)
+                    .addComponent(jScrollPane1))
                 .addGap(30, 30, 30)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -207,8 +235,11 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(primYSigte, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                     .addComponent(gramaticaSV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(JScrollPanel)
+                .addComponent(JScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -229,6 +260,10 @@ public class Interfaz extends javax.swing.JFrame {
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
         File archivo = chooser.getSelectedFile();
+        DefaultTableModel TableModel = new DefaultTableModel();
+        String Header[] = {"Pila", "Entrada", "Salida"};
+        TableModel.setColumnIdentifiers(Header);
+        JTable.setModel(TableModel);
         try {
             FileReader fr = new FileReader(archivo);
             BufferedReader br = new BufferedReader(fr);
@@ -244,6 +279,7 @@ public class Interfaz extends javax.swing.JFrame {
             textoGramatica += "</html>";
             gramOriginal.setText(textoGramatica);
             GSVicio gSVicio = new GSVicio(gramatica);
+            S = gSVicio.getnTInicial();
             String textoGramaticaSV = "<html>";
             for (String llave : gSVicio.getNoTerminales()) {
                 String valor = gSVicio.getProducciones().get(llave);
@@ -268,11 +304,11 @@ public class Interfaz extends javax.swing.JFrame {
             }
             textoPrimYSigte += "</html>";
             primYSigte.setText(textoPrimYSigte);
-            TablaM tablaM = new TablaM(gSVicio, primeros, siguientes);
+            tablaM = new TablaM(gSVicio, primeros, siguientes);
 
             DefaultTableModel modeloTablaM = new DefaultTableModel();
             String[] cabezera = new String[gSVicio.getTerminales().size() + 2];
-            cabezera[0] = "No terminal/Terminal";
+            cabezera[0] = "No terminal|Terminal";
             int i = 1;
             for (String terminal : gSVicio.getTerminales()) {
                 cabezera[i] = terminal;
@@ -297,11 +333,110 @@ public class Interfaz extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_escogerGramActionPerformed
 
-    private void cadenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadenaActionPerformed
+    private void CadenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadenaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cadenaActionPerformed
+    }//GEN-LAST:event_CadenaActionPerformed
+
+    private void Btn_VerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_VerificarActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel TableModel = new DefaultTableModel();
+        String Header[] = {"Pila", "Entrada", "Salida"};
+        TableModel.setColumnIdentifiers(Header);
+        //tablaM.getTablaM().forEach((k, v) -> System.out.println("Key: " + k + ": Value: " + v));
+        if (!Cadena.getText().equals("")) {
+            String check = Cadena.getText() + "$";
+            Stack<String> stack = new Stack<String>();
+            stack.push("$");
+            stack.push(S);
+            String X, a;
+            do {
+                a = check.charAt(0) + "";
+                X = stack.peek();
+                //System.out.println("X: " + X + " a: " + a);
+                if (esTerminal(X + "") || X.equals('$')) {
+                    if (X.equals(a)) {
+                        // System.out.println(stack);
+                        //System.out.println(check);
+                        TableModel.addRow(new Object[]{getStack(stack), check, " "});
+                        stack.pop();
+                        check = check.substring(1);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error, cadena invalida",
+                                "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+                        TableModel = new DefaultTableModel();
+                        TableModel.setColumnIdentifiers(Header);
+                        break;
+                    }
+                } else {
+                    HashMap<String, String> Hash = tablaM.getTablaM().get(X + "");
+                    //System.out.println(Hash);
+                    String Prod = Hash.get(a + "");
+                    //System.out.println(stack);
+                    //System.out.println(check);
+                    TableModel.addRow(new Object[]{getStack(stack), check, Prod});
+                    //System.out.println(Prod);
+                    if (!Prod.equals("")) {
+                        String f = Prod.charAt(0) + "";
+                        if (f.equals(X) || (f.concat("'").equals(X))) {
+                            stack.pop();
+                            String p;
+                            String h = Prod.charAt(1) + "";
+                            if (h.equals("'")) {
+                                p = Prod.substring(4);
+                            } else {
+                                p = Prod.substring(3);
+                            }
+                            boolean sw = true;
+                            if (!p.equals("&")) {
+                                for (int i = p.length() - 1; i >= 0; i--) {
+                                    String comp = p.charAt(i) + "";
+                                    if (comp.equals("'")) {
+                                        sw = false;
+                                    } else if (sw == false) {
+                                        stack.push(p.charAt(i) + "'");
+                                        sw = true;
+                                    } else {
+                                        stack.push(p.charAt(i) + "");
+                                    }
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error, cadena invalida",
+                                    "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+                            TableModel = new DefaultTableModel();
+                            TableModel.setColumnIdentifiers(Header);
+                            break;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error, cadena invalida",
+                                "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+                        TableModel = new DefaultTableModel();
+                        TableModel.setColumnIdentifiers(Header);
+                        break;
+                    }
+                }
+            } while (!X.equals("$"));
+
+            JTable.setModel(TableModel);
+        }
+
+    }//GEN-LAST:event_Btn_VerificarActionPerformed
+
+    private boolean esTerminal(String cadena) {
+        return Pattern.matches("[A-Z]'*", cadena) ? false : true;
+    }
+
+    public String getStack(Stack<String> S) {
+        Iterator value = S.iterator();
+        String m = "";
+        while (value.hasNext()) {
+            m = m + value.next();
+        }
+        return m;
+    }
 
     /**
      * @param args the command line arguments
@@ -339,19 +474,21 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Btn_Verificar;
+    private javax.swing.JTextField Cadena;
     private javax.swing.JScrollPane JScrollPanel;
     private javax.swing.JTable JTablaM;
-    private javax.swing.JTextField cadena;
+    private javax.swing.JTable JTable;
     private javax.swing.JButton escogerGram;
     private javax.swing.JLabel gramOriginal;
     private javax.swing.JLabel gramaticaSV;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel primYSigte;
     private javax.swing.JLabel tituloGram;
     // End of variables declaration//GEN-END:variables

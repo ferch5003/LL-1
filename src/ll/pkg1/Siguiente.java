@@ -63,7 +63,6 @@ public class Siguiente {
 
     private void construirSiguiente(GSVicio gSVicio, Primero primeros) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
-            System.out.println("No term: " + noTerminal);
             for (String noTermAux : gSVicio.getNoTerminales()) {
                 String[] producciones = gSVicio.getProducciones().get(noTermAux).split(" ");
                 for (String produccion : producciones) {
@@ -79,13 +78,16 @@ public class Siguiente {
                                     Set<String> conjPrimero = primeros.getPrimeros().get(simbolo);
                                     if (!conjPrimero.contains("&")) {
                                         this.siguientes.get(noTerminal).addAll(conjPrimero);
+                                        break;
                                     } else {
-                                        System.out.println("simbolo: " + simbolo);
                                         if (prod.length() == 1) {
                                             this.siguientes.get(noTerminal).addAll(conjPrimero);
                                             this.nTSiguientes.get(noTerminal).add(noTermAux);
                                         } else {
                                             this.siguientes.get(noTerminal).addAll(conjPrimero);
+                                            if (i == prod.length() - 1) {
+                                                this.nTSiguientes.get(noTerminal).add(noTermAux);
+                                            }
                                         }
                                         this.siguientes.get(noTerminal).remove("&");
                                     }

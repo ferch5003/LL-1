@@ -46,17 +46,16 @@ public class TablaM {
                             String valor = noTerminal + "->" + produccion;
                             this.tablaM.get(noTerminal).put(simbolo, valor);
                         }
+                    }
+                    if (!produccion.equals("&")) {
+                        if (produce.contains(terminal)) {
+                            String valor = noTerminal + "->" + produccion;
+                            this.tablaM.get(noTerminal).put(terminal, valor);
+                        }
                     } else {
-                        if (!produccion.equals("&")) {
-                            if (produce.contains(terminal)) {
-                                String valor = noTerminal + "->" + produccion;
-                                this.tablaM.get(noTerminal).put(terminal, valor);
-                            }
-                        } else {
-                            for (String vacio : siguientes.getSiguientes().get(noTerminal)) {
-                                String valor = noTerminal + "->&";
-                                this.tablaM.get(noTerminal).put(vacio, valor);
-                            }
+                        for (String vacio : siguientes.getSiguientes().get(noTerminal)) {
+                            String valor = noTerminal + "->&";
+                            this.tablaM.get(noTerminal).put(vacio, valor);
                         }
                     }
                 });

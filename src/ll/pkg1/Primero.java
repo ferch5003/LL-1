@@ -47,10 +47,6 @@ public class Primero {
         verifCiclos(gSVicio);
 
         verifEpsilon(gSVicio);
-
-//        mContieneEpsilon();
-        
-        System.out.println("M: " + this.valoresM);
     }
 
     public HashMap<String, Set<String>> getPrimeros() {
@@ -182,14 +178,6 @@ public class Primero {
             }
         });
     }
-
-//    private void mContieneEpsilon() {
-//        this.primeros.forEach((noTerminal, conjunto) -> {
-//            if (conjunto.contains("&")) {
-//                this.valoresM.get(noTerminal).put("&", new HashSet<>());
-//            }
-//        });
-//    }
 
     private boolean esTerminal(String cadena) {
         return Pattern.matches("[A-Z]", cadena) ? false : true;

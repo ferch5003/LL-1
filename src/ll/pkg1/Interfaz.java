@@ -5,9 +5,6 @@
  */
 package ll.pkg1;
 
-import java.awt.Dialog;
-import java.awt.FileDialog;
-import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,24 +71,29 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(60, 60, 62));
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 254));
         jLabel1.setText("LL(1)");
 
-        tituloGram.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        tituloGram.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
         tituloGram.setForeground(new java.awt.Color(255, 255, 254));
         tituloGram.setText("Gramatica original");
 
+        gramOriginal.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
         gramOriginal.setForeground(new java.awt.Color(255, 255, 254));
         gramOriginal.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("URW Gothic", 1, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 254));
         jLabel2.setText("Cadena a verificar");
 
         Cadena.setBackground(new java.awt.Color(60, 60, 62));
+        Cadena.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
         Cadena.setForeground(new java.awt.Color(255, 255, 254));
         Cadena.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
+        Cadena.setCaretColor(new java.awt.Color(255, 255, 254));
+        Cadena.setSelectedTextColor(new java.awt.Color(255, 255, 254));
+        Cadena.setSelectionColor(new java.awt.Color(255, 255, 254));
         Cadena.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CadenaActionPerformed(evt);
@@ -167,25 +169,28 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addComponent(tituloGram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(gramOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                .addComponent(gramOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Noto Sans", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Gramatica sin vicios");
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Noto Sans", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Primeros y Siguientes");
 
+        primYSigte.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
         primYSigte.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        gramaticaSV.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
         gramaticaSV.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         JScrollPanel.setBackground(new java.awt.Color(255, 255, 255));
 
+        JTablaM.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
         JTablaM.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -196,6 +201,7 @@ public class Interfaz extends javax.swing.JFrame {
         ));
         JScrollPanel.setViewportView(JTablaM);
 
+        JTable.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
         JTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -259,91 +265,113 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void imprimirGramOriginal(Gramatica gramatica) {
+        String textoGramatica = "<html>";
+        for (String llave : gramatica.getNoTerminales()) {
+            String valor = gramatica.getProducciones().get(llave);
+            String[] producciones = valor.split(" ");
+            for (String produccion : producciones) {
+                textoGramatica += "<p>" + llave + "->" + produccion + "</p>";
+            }
+        }
+        textoGramatica += "</html>";
+        gramOriginal.setText(textoGramatica);
+    }
+
+    private void imprimirGramSVicio(GSVicio gSVicio) {
+        String textoGramaticaSV = "<html>";
+        for (String llave : gSVicio.getNoTerminales()) {
+            String valor = gSVicio.getProducciones().get(llave);
+            String[] producciones = valor.split(" ");
+            for (String produccion : producciones) {
+                textoGramaticaSV += "<p>" + llave + "->" + produccion + "</p>";
+            }
+        }
+        textoGramaticaSV += "</html>";
+        gramaticaSV.setText(textoGramaticaSV);
+    }
+
+    private void imprimirPrimYSig(GSVicio gSVicio,Primero primeros, Siguiente siguientes) {
+        String textoPrimYSigte = "<html>";
+        for (String llave : gSVicio.getNoTerminales()) {
+            Set<String> conjunto = primeros.getPrimeros().get(llave);
+            textoPrimYSigte += "<p>PRIMERO(" + llave + ")=" + conjunto + "</p>";
+        }
+        textoPrimYSigte += "<br/>";
+        for (String llave : gSVicio.getNoTerminales()) {
+            Set<String> conjunto = siguientes.getSiguientes().get(llave);
+            textoPrimYSigte += "<p>SIGUIENTE(" + llave + ")=" + conjunto + "</p>";
+        }
+        textoPrimYSigte += "</html>";
+        primYSigte.setText(textoPrimYSigte);
+    }
+
+    private void imprimirTablaM(GSVicio gSVicio) {
+        DefaultTableModel modeloTablaM = new DefaultTableModel();
+        String[] cabezera = new String[gSVicio.getTerminales().size() + 2];
+        cabezera[0] = "No terminal|Terminal";
+        int i = 1;
+        for (String terminal : gSVicio.getTerminales()) {
+            cabezera[i] = terminal;
+            i++;
+        }
+        cabezera[cabezera.length - 1] = "$";
+        modeloTablaM.setColumnIdentifiers(cabezera);
+        for (String noTerminal : gSVicio.getNoTerminales()) {
+            Object[] fila = new Object[gSVicio.getTerminales().size() + 2];
+            fila[0] = noTerminal;
+            int j = 1;
+            for (String terminal : gSVicio.getTerminales()) {
+                fila[j] = tablaM.getTablaM().get(noTerminal).get(terminal);
+                j++;
+            }
+            fila[fila.length - 1] = tablaM.getTablaM().get(noTerminal).get("$");
+            modeloTablaM.addRow(fila);
+        }
+        JTablaM.setModel(modeloTablaM);
+    }
+
     private void escogerGramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_escogerGramActionPerformed
-        FileDialog dialog = new FileDialog(new Dialog(this), "Escoja un archivo", FileDialog.LOAD);
-        dialog.setVisible(true);
-        String obtenerArchivo = dialog.getFile();
-        if (obtenerArchivo == null) {
-            JOptionPane.showMessageDialog(null, "No ha selecionado ningun archivo");
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File archivo = chooser.getSelectedFile();
+        DefaultTableModel TableModel = new DefaultTableModel();
+        String Header[] = {"Pila", "Entrada", "Salida"};
+        TableModel.setColumnIdentifiers(Header);
+        JTable.setModel(TableModel);
+        if (archivo == null) {
+            JOptionPane.showMessageDialog(null, "No ha selecionado ningun archivo",
+                                "No hay archivo", JOptionPane.ERROR_MESSAGE);
         } else {
-            String ruta = dialog.getDirectory() + dialog.getFile();
-            File archivo = new File(ruta);
-            dialog.dispose();
-            DefaultTableModel TableModel = new DefaultTableModel();
-            String Header[] = {"Pila", "Entrada", "Salida"};
-            TableModel.setColumnIdentifiers(Header);
-            JTable.setModel(TableModel);
             try {
+                // Usar Archivo
                 FileReader fr = new FileReader(archivo);
                 BufferedReader br = new BufferedReader(fr);
+
                 Gramatica gramatica = new Gramatica(br);
-                String textoGramatica = "<html>";
-                for (String llave : gramatica.getNoTerminales()) {
-                    String valor = gramatica.getProducciones().get(llave);
-                    String[] producciones = valor.split(" ");
-                    for (String produccion : producciones) {
-                        textoGramatica += "<p>" + llave + "->" + produccion + "</p>";
-                    }
-                }
-                textoGramatica += "</html>";
-                gramOriginal.setText(textoGramatica);
+                // Imprimir gramatica
+                imprimirGramOriginal(gramatica);
                 GSVicio gSVicio = new GSVicio(gramatica);
                 S = gSVicio.getnTInicial();
-                String textoGramaticaSV = "<html>";
-                for (String llave : gSVicio.getNoTerminales()) {
-                    String valor = gSVicio.getProducciones().get(llave);
-                    String[] producciones = valor.split(" ");
-                    for (String produccion : producciones) {
-                        textoGramaticaSV += "<p>" + llave + "->" + produccion + "</p>";
-                    }
-                }
-                textoGramaticaSV += "</html>";
-                gramaticaSV.setText(textoGramaticaSV);
-                Primero primeros = new Primero(gSVicio);
-                String textoPrimYSigte = "<html>";
-                for (String llave : gSVicio.getNoTerminales()) {
-                    Set<String> conjunto = primeros.getPrimeros().get(llave);
-                    textoPrimYSigte += "<p>PRIMERO(" + llave + ")=" + conjunto + "</p>";
-                }
-                Siguiente siguientes = new Siguiente(gSVicio, primeros);
-                textoPrimYSigte += "<br/>";
-                for (String llave : gSVicio.getNoTerminales()) {
-                    Set<String> conjunto = siguientes.getSiguientes().get(llave);
-                    textoPrimYSigte += "<p>SIGUIENTE(" + llave + ")=" + conjunto + "</p>";
-                }
-                textoPrimYSigte += "</html>";
-                primYSigte.setText(textoPrimYSigte);
-                tablaM = new TablaM(gSVicio, primeros, siguientes);
+                // Imprimir gramatica sin vicio
+                imprimirGramSVicio(gSVicio);
 
-                DefaultTableModel modeloTablaM = new DefaultTableModel();
-                String[] cabezera = new String[gSVicio.getTerminales().size() + 2];
-                cabezera[0] = "No terminal|Terminal";
-                int i = 1;
-                for (String terminal : gSVicio.getTerminales()) {
-                    cabezera[i] = terminal;
-                    i++;
-                }
-                cabezera[cabezera.length - 1] = "$";
-                modeloTablaM.setColumnIdentifiers(cabezera);
-                for (String noTerminal : gSVicio.getNoTerminales()) {
-                    Object[] fila = new Object[gSVicio.getTerminales().size() + 2];
-                    fila[0] = noTerminal;
-                    int j = 1;
-                    for (String terminal : gSVicio.getTerminales()) {
-                        fila[j] = tablaM.getTablaM().get(noTerminal).get(terminal);
-                        j++;
-                    }
-                    fila[fila.length - 1] = tablaM.getTablaM().get(noTerminal).get("$");
-                    modeloTablaM.addRow(fila);
-                }
-                JTablaM.setModel(modeloTablaM);
+                Primero primeros = new Primero(gSVicio);
+                Siguiente siguientes = new Siguiente(gSVicio, primeros);
+                
+                //Imprimir primeros y siguientes
+                imprimirPrimYSig(gSVicio, primeros, siguientes);
+
+                tablaM = new TablaM(gSVicio, primeros, siguientes);
+                // Imprimir tabla M
+                imprimirTablaM(gSVicio);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
 
+        }
     }//GEN-LAST:event_escogerGramActionPerformed
 
     private void CadenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadenaActionPerformed

@@ -5,6 +5,9 @@
  */
 package ll.pkg1;
 
+import java.awt.Dialog;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,8 +37,8 @@ public class Interfaz extends javax.swing.JFrame {
     String S;
 
     public Interfaz() {
-        initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
+        initComponents();
     }
 
     /**
@@ -257,81 +260,88 @@ public class Interfaz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void escogerGramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_escogerGramActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
-        File archivo = chooser.getSelectedFile();
-        DefaultTableModel TableModel = new DefaultTableModel();
-        String Header[] = {"Pila", "Entrada", "Salida"};
-        TableModel.setColumnIdentifiers(Header);
-        JTable.setModel(TableModel);
-        try {
-            FileReader fr = new FileReader(archivo);
-            BufferedReader br = new BufferedReader(fr);
-            Gramatica gramatica = new Gramatica(br);
-            String textoGramatica = "<html>";
-            for (String llave : gramatica.getNoTerminales()) {
-                String valor = gramatica.getProducciones().get(llave);
-                String[] producciones = valor.split(" ");
-                for (String produccion : producciones) {
-                    textoGramatica += "<p>" + llave + "->" + produccion + "</p>";
+        FileDialog dialog = new FileDialog(new Dialog(this), "Escoja un archivo", FileDialog.LOAD);
+        dialog.setVisible(true);
+        String obtenerArchivo = dialog.getFile();
+        if (obtenerArchivo == null) {
+            JOptionPane.showMessageDialog(null, "No ha selecionado ningun archivo");
+        } else {
+            String ruta = dialog.getDirectory() + dialog.getFile();
+            File archivo = new File(ruta);
+            dialog.dispose();
+            DefaultTableModel TableModel = new DefaultTableModel();
+            String Header[] = {"Pila", "Entrada", "Salida"};
+            TableModel.setColumnIdentifiers(Header);
+            JTable.setModel(TableModel);
+            try {
+                FileReader fr = new FileReader(archivo);
+                BufferedReader br = new BufferedReader(fr);
+                Gramatica gramatica = new Gramatica(br);
+                String textoGramatica = "<html>";
+                for (String llave : gramatica.getNoTerminales()) {
+                    String valor = gramatica.getProducciones().get(llave);
+                    String[] producciones = valor.split(" ");
+                    for (String produccion : producciones) {
+                        textoGramatica += "<p>" + llave + "->" + produccion + "</p>";
+                    }
                 }
-            }
-            textoGramatica += "</html>";
-            gramOriginal.setText(textoGramatica);
-            GSVicio gSVicio = new GSVicio(gramatica);
-            S = gSVicio.getnTInicial();
-            String textoGramaticaSV = "<html>";
-            for (String llave : gSVicio.getNoTerminales()) {
-                String valor = gSVicio.getProducciones().get(llave);
-                String[] producciones = valor.split(" ");
-                for (String produccion : producciones) {
-                    textoGramaticaSV += "<p>" + llave + "->" + produccion + "</p>";
+                textoGramatica += "</html>";
+                gramOriginal.setText(textoGramatica);
+                GSVicio gSVicio = new GSVicio(gramatica);
+                S = gSVicio.getnTInicial();
+                String textoGramaticaSV = "<html>";
+                for (String llave : gSVicio.getNoTerminales()) {
+                    String valor = gSVicio.getProducciones().get(llave);
+                    String[] producciones = valor.split(" ");
+                    for (String produccion : producciones) {
+                        textoGramaticaSV += "<p>" + llave + "->" + produccion + "</p>";
+                    }
                 }
-            }
-            textoGramaticaSV += "</html>";
-            gramaticaSV.setText(textoGramaticaSV);
-            Primero primeros = new Primero(gSVicio);
-            String textoPrimYSigte = "<html>";
-            for (String llave : gSVicio.getNoTerminales()) {
-                Set<String> conjunto = primeros.getPrimeros().get(llave);
-                textoPrimYSigte += "<p>PRIMERO(" + llave + ")=" + conjunto + "</p>";
-            }
-            Siguiente siguientes = new Siguiente(gSVicio, primeros);
-            textoPrimYSigte += "<br/>";
-            for (String llave : gSVicio.getNoTerminales()) {
-                Set<String> conjunto = siguientes.getSiguientes().get(llave);
-                textoPrimYSigte += "<p>SIGUIENTE(" + llave + ")=" + conjunto + "</p>";
-            }
-            textoPrimYSigte += "</html>";
-            primYSigte.setText(textoPrimYSigte);
-            tablaM = new TablaM(gSVicio, primeros, siguientes);
+                textoGramaticaSV += "</html>";
+                gramaticaSV.setText(textoGramaticaSV);
+                Primero primeros = new Primero(gSVicio);
+                String textoPrimYSigte = "<html>";
+                for (String llave : gSVicio.getNoTerminales()) {
+                    Set<String> conjunto = primeros.getPrimeros().get(llave);
+                    textoPrimYSigte += "<p>PRIMERO(" + llave + ")=" + conjunto + "</p>";
+                }
+                Siguiente siguientes = new Siguiente(gSVicio, primeros);
+                textoPrimYSigte += "<br/>";
+                for (String llave : gSVicio.getNoTerminales()) {
+                    Set<String> conjunto = siguientes.getSiguientes().get(llave);
+                    textoPrimYSigte += "<p>SIGUIENTE(" + llave + ")=" + conjunto + "</p>";
+                }
+                textoPrimYSigte += "</html>";
+                primYSigte.setText(textoPrimYSigte);
+                tablaM = new TablaM(gSVicio, primeros, siguientes);
 
-            DefaultTableModel modeloTablaM = new DefaultTableModel();
-            String[] cabezera = new String[gSVicio.getTerminales().size() + 2];
-            cabezera[0] = "No terminal|Terminal";
-            int i = 1;
-            for (String terminal : gSVicio.getTerminales()) {
-                cabezera[i] = terminal;
-                i++;
-            }
-            cabezera[cabezera.length - 1] = "$";
-            modeloTablaM.setColumnIdentifiers(cabezera);
-            for (String noTerminal : gSVicio.getNoTerminales()) {
-                Object[] fila = new Object[gSVicio.getTerminales().size() + 2];
-                fila[0] = noTerminal;
-                int j = 1;
+                DefaultTableModel modeloTablaM = new DefaultTableModel();
+                String[] cabezera = new String[gSVicio.getTerminales().size() + 2];
+                cabezera[0] = "No terminal|Terminal";
+                int i = 1;
                 for (String terminal : gSVicio.getTerminales()) {
-                    fila[j] = tablaM.getTablaM().get(noTerminal).get(terminal);
-                    j++;
+                    cabezera[i] = terminal;
+                    i++;
                 }
-                fila[fila.length - 1] = tablaM.getTablaM().get(noTerminal).get("$");
-                modeloTablaM.addRow(fila);
+                cabezera[cabezera.length - 1] = "$";
+                modeloTablaM.setColumnIdentifiers(cabezera);
+                for (String noTerminal : gSVicio.getNoTerminales()) {
+                    Object[] fila = new Object[gSVicio.getTerminales().size() + 2];
+                    fila[0] = noTerminal;
+                    int j = 1;
+                    for (String terminal : gSVicio.getTerminales()) {
+                        fila[j] = tablaM.getTablaM().get(noTerminal).get(terminal);
+                        j++;
+                    }
+                    fila[fila.length - 1] = tablaM.getTablaM().get(noTerminal).get("$");
+                    modeloTablaM.addRow(fila);
+                }
+                JTablaM.setModel(modeloTablaM);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }
-            JTablaM.setModel(modeloTablaM);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_escogerGramActionPerformed
@@ -355,7 +365,7 @@ public class Interfaz extends javax.swing.JFrame {
             do {
                 a = check.charAt(0) + "";
                 X = stack.peek();
-                //System.out.println("X: " + X + " a: " + a);
+                System.out.println("X: " + X + " a: " + a);
                 if (esTerminal(X + "") || X.equals('$')) {
                     if (X.equals(a)) {
                         // System.out.println(stack);

@@ -18,7 +18,7 @@ public class TablaM {
     public HashMap<String, HashMap<String, String>> getTablaM() {
         return tablaM;
     }
-    
+
     public TablaM(GSVicio gSVicio, Primero primeros, Siguiente siguientes) {
         this.tablaM = new HashMap<>();
 
@@ -41,15 +41,22 @@ public class TablaM {
         primeros.getPrimeros().forEach((noTerminal, terminales) -> {
             for (String terminal : terminales) {
                 primeros.getValoresM().get(noTerminal).forEach((produccion, produce) -> {
-                    if (!produccion.equals("&")) {
-                        if (produce.contains(terminal)) {
+                    if (produce.contains("&")) {
+                        for (String simbolo : siguientes.getSiguientes().get(noTerminal)) {
                             String valor = noTerminal + "->" + produccion;
-                            this.tablaM.get(noTerminal).put(terminal, valor);
+                            this.tablaM.get(noTerminal).put(simbolo, valor);
                         }
                     } else {
-                        for (String vacio : siguientes.getSiguientes().get(noTerminal)) {
-                            String valor = noTerminal + "->&";
-                            this.tablaM.get(noTerminal).put(vacio, valor);
+                        if (!produccion.equals("&")) {
+                            if (produce.contains(terminal)) {
+                                String valor = noTerminal + "->" + produccion;
+                                this.tablaM.get(noTerminal).put(terminal, valor);
+                            }
+                        } else {
+                            for (String vacio : siguientes.getSiguientes().get(noTerminal)) {
+                                String valor = noTerminal + "->&";
+                                this.tablaM.get(noTerminal).put(vacio, valor);
+                            }
                         }
                     }
                 });

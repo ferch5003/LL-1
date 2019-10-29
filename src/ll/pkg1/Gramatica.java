@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 /**
  *
  * @author ferch5003
@@ -19,7 +20,7 @@ public class Gramatica {
     private ArrayList<String> terminales;
     private ArrayList<String> noTerminales;
     private String nTInicial;
-    private HashMap<String, String> producciones;
+    private HashMap<String, ArrayList<String>> producciones;
 
     public Gramatica(BufferedReader gramatica) throws FileNotFoundException, IOException {
 
@@ -28,19 +29,14 @@ public class Gramatica {
         this.producciones = new HashMap<>();
 
         String linea;
-        String gramaticaConvertida = "";
         while ((linea = gramatica.readLine()) != null) {
             linea = linea.trim();
-            gramaticaConvertida += linea + " ";
+            buscarTerminales(linea);
+            buscarNoTerminales(linea);
+            buscarProducciones(linea);
         }
-
-        String[] arregloGramatica = gramaticaConvertida.split(" ");
-
-        buscarTerminales(arregloGramatica);
-        buscarNoTerminales(arregloGramatica);
-        buscarProducciones(arregloGramatica);
-
-        this.nTInicial = buscarNTInicial(arregloGramatica);
+        
+        this.nTInicial = this.noTerminales.get(0);
     }
 
     public ArrayList<String> getTerminales() {
@@ -55,50 +51,37 @@ public class Gramatica {
         return nTInicial;
     }
 
-    public HashMap<String, String> getProducciones() {
+    public HashMap<String, ArrayList<String>> getProducciones() {
         return producciones;
     }
 
-    private void buscarTerminales(String[] gramatica) {
-        for (String linea : gramatica) {
-            int indiceProduce = linea.indexOf(">");
-            String cadenaTerminales = linea.substring(indiceProduce + 1, linea.length());
-            cadenaTerminales = cadenaTerminales.replaceAll("([A-Z])", "");
-            for (int i = 0; i < cadenaTerminales.length(); i++) {
-                String simbolo = cadenaTerminales.substring(i, i + 1);
-                if (!simbolo.equals("&") && !this.terminales.contains(simbolo)) {
-                    this.terminales.add(simbolo);
-                }
+    private void buscarTerminales(String linea) {
+        int indiceProduce = linea.indexOf(">");
+        String cadenaTerminales = linea.substring(indiceProduce + 1, linea.length());
+        cadenaTerminales = cadenaTerminales.replaceAll("([A-Z])", "");
+        for (int i = 0; i < cadenaTerminales.length(); i++) {
+            String simbolo = cadenaTerminales.substring(i, i + 1);
+            if (!simbolo.equals("&") && !this.terminales.contains(simbolo)) {
+                this.terminales.add(simbolo);
             }
         }
     }
 
-    private void buscarNoTerminales(String[] gramatica) throws IOException {
-        for (String linea : gramatica) {
+    private void buscarNoTerminales(String linea) throws IOException {
             int indiceNTerminal = linea.indexOf("-");
             String cadenaNTerminales = linea.substring(0, indiceNTerminal);
             if (!this.noTerminales.contains(cadenaNTerminales)) {
                 this.noTerminales.add(cadenaNTerminales);
             }
-        }
     }
 
-    private void buscarProducciones(String[] gramatica) throws IOException {
-        for (String linea : gramatica) {
+    private void buscarProducciones(String linea) throws IOException {
             String[] expresiones = linea.split("->");
             if (!this.producciones.containsKey(expresiones[0])) {
-                this.producciones.put(expresiones[0], expresiones[1]);
+                this.producciones.put(expresiones[0], new ArrayList<>());
+                this.producciones.get(expresiones[0]).add(expresiones[1]);
             } else {
-                String alternancia = this.producciones.get(expresiones[0]) + " " + expresiones[1];
-                this.producciones.put(expresiones[0], alternancia);
+                this.producciones.get(expresiones[0]).add(expresiones[1]);
             }
-        }
-    }
-
-    private String buscarNTInicial(String[] gramatica) throws IOException {
-        String primeraExpresion = gramatica[0];
-        int indiceNTerminal = primeraExpresion.indexOf("-");
-        String simboloInicio = primeraExpresion.substring(0, indiceNTerminal);
-        return simboloInicio;
     }
 }

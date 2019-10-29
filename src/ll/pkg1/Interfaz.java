@@ -5,11 +5,13 @@
  */
 package ll.pkg1;
 
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -58,12 +60,14 @@ public class Interfaz extends javax.swing.JFrame {
         escogerGram = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        primYSigte = new javax.swing.JLabel();
-        gramaticaSV = new javax.swing.JLabel();
         JScrollPanel = new javax.swing.JScrollPane();
         JTablaM = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTable = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +101,11 @@ public class Interfaz extends javax.swing.JFrame {
         Cadena.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CadenaActionPerformed(evt);
+            }
+        });
+        Cadena.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                CadenaKeyPressed(evt);
             }
         });
 
@@ -182,12 +191,6 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Primeros y Siguientes");
 
-        primYSigte.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
-        primYSigte.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
-        gramaticaSV.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
-        gramaticaSV.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
         JScrollPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         JTablaM.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
@@ -212,6 +215,20 @@ public class Interfaz extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(JTable);
 
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(new java.awt.Color(255, 255, 254));
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setBorder(null);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        jTextArea2.setEditable(false);
+        jTextArea2.setBackground(new java.awt.Color(255, 255, 254));
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(5);
+        jTextArea2.setBorder(null);
+        jScrollPane3.setViewportView(jTextArea2);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -219,16 +236,18 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JScrollPanel)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(gramaticaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(primYSigte, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(JScrollPanel)
-                    .addComponent(jScrollPane1))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))))
                 .addGap(30, 30, 30)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -241,11 +260,11 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(primYSigte, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
-                    .addComponent(gramaticaSV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(JScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -265,11 +284,67 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void escogerGramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_escogerGramActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File archivo = chooser.getSelectedFile();
+        DefaultTableModel TableModel = new DefaultTableModel();
+        String Header[] = {"Pila", "Entrada", "Salida"};
+        TableModel.setColumnIdentifiers(Header);
+        JTable.setModel(TableModel);
+        if (archivo == null) {
+            JOptionPane.showMessageDialog(null, "No ha selecionado ningun archivo",
+                    "No hay archivo", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                // Usar Archivo
+                FileReader fr = new FileReader(archivo);
+                BufferedReader br = new BufferedReader(fr);
+
+                Gramatica gramatica = new Gramatica(br);
+                // Imprimir gramatica
+                imprimirGramOriginal(gramatica);
+                GSVicio gSVicio = new GSVicio(gramatica);
+                S = gSVicio.getnTInicial();
+                // Imprimir gramatica sin vicio
+                imprimirGramSVicio(gSVicio);
+
+                Primero primeros = new Primero(gSVicio);
+                Siguiente siguientes = new Siguiente(gSVicio, primeros);
+
+                //Imprimir primeros y siguientes
+                imprimirPrimYSig(gSVicio, primeros, siguientes);
+
+                tablaM = new TablaM(gSVicio, primeros, siguientes);
+                // Imprimir tabla M
+                imprimirTablaM(gSVicio);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_escogerGramActionPerformed
+
+    private void Btn_VerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_VerificarActionPerformed
+        verificarCadena();
+    }//GEN-LAST:event_Btn_VerificarActionPerformed
+
+    private void CadenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadenaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CadenaActionPerformed
+
+    private void CadenaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CadenaKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            verificarCadena();
+        }
+    }//GEN-LAST:event_CadenaKeyPressed
+
     private void imprimirGramOriginal(Gramatica gramatica) {
         String textoGramatica = "<html>";
         for (String llave : gramatica.getNoTerminales()) {
-            String valor = gramatica.getProducciones().get(llave);
-            String[] producciones = valor.split(" ");
+            ArrayList<String> producciones = gramatica.getProducciones().get(llave);
             for (String produccion : producciones) {
                 textoGramatica += "<p>" + llave + "->" + produccion + "</p>";
             }
@@ -279,31 +354,28 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     private void imprimirGramSVicio(GSVicio gSVicio) {
-        String textoGramaticaSV = "<html>";
+        String textoGramaticaSV = "";
         for (String llave : gSVicio.getNoTerminales()) {
-            String valor = gSVicio.getProducciones().get(llave);
-            String[] producciones = valor.split(" ");
+            ArrayList<String> producciones = gSVicio.getProducciones().get(llave);
             for (String produccion : producciones) {
-                textoGramaticaSV += "<p>" + llave + "->" + produccion + "</p>";
+                textoGramaticaSV += llave + "->" + produccion + "\n";
             }
         }
-        textoGramaticaSV += "</html>";
-        gramaticaSV.setText(textoGramaticaSV);
+        jTextArea1.setText(textoGramaticaSV);
     }
 
-    private void imprimirPrimYSig(GSVicio gSVicio,Primero primeros, Siguiente siguientes) {
-        String textoPrimYSigte = "<html>";
+    private void imprimirPrimYSig(GSVicio gSVicio, Primero primeros, Siguiente siguientes) {
+        String textoPrimYSigte = "";
         for (String llave : gSVicio.getNoTerminales()) {
             Set<String> conjunto = primeros.getPrimeros().get(llave);
-            textoPrimYSigte += "<p>PRIMERO(" + llave + ")=" + conjunto + "</p>";
+            textoPrimYSigte += "PRIMERO(" + llave + ")=" + conjunto + "\n";
         }
-        textoPrimYSigte += "<br/>";
+        textoPrimYSigte += "\n";
         for (String llave : gSVicio.getNoTerminales()) {
             Set<String> conjunto = siguientes.getSiguientes().get(llave);
-            textoPrimYSigte += "<p>SIGUIENTE(" + llave + ")=" + conjunto + "</p>";
+            textoPrimYSigte += "SIGUIENTE(" + llave + ")=" + conjunto + "\n";
         }
-        textoPrimYSigte += "</html>";
-        primYSigte.setText(textoPrimYSigte);
+        jTextArea2.setText(textoPrimYSigte);
     }
 
     private void imprimirTablaM(GSVicio gSVicio) {
@@ -331,140 +403,97 @@ public class Interfaz extends javax.swing.JFrame {
         JTablaM.setModel(modeloTablaM);
     }
 
-    private void escogerGramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_escogerGramActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
-        File archivo = chooser.getSelectedFile();
+    private void verificarCadena() {
         DefaultTableModel TableModel = new DefaultTableModel();
         String Header[] = {"Pila", "Entrada", "Salida"};
         TableModel.setColumnIdentifiers(Header);
-        JTable.setModel(TableModel);
-        if (archivo == null) {
-            JOptionPane.showMessageDialog(null, "No ha selecionado ningun archivo",
-                                "No hay archivo", JOptionPane.ERROR_MESSAGE);
-        } else {
-            try {
-                // Usar Archivo
-                FileReader fr = new FileReader(archivo);
-                BufferedReader br = new BufferedReader(fr);
 
-                Gramatica gramatica = new Gramatica(br);
-                // Imprimir gramatica
-                imprimirGramOriginal(gramatica);
-                GSVicio gSVicio = new GSVicio(gramatica);
-                S = gSVicio.getnTInicial();
-                // Imprimir gramatica sin vicio
-                imprimirGramSVicio(gSVicio);
+        String check = Cadena.getText() + "$";
+        check = check.replaceAll("&", "");
 
-                Primero primeros = new Primero(gSVicio);
-                Siguiente siguientes = new Siguiente(gSVicio, primeros);
-                
-                //Imprimir primeros y siguientes
-                imprimirPrimYSig(gSVicio, primeros, siguientes);
-
-                tablaM = new TablaM(gSVicio, primeros, siguientes);
-                // Imprimir tabla M
-                imprimirTablaM(gSVicio);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        }
-    }//GEN-LAST:event_escogerGramActionPerformed
-
-    private void CadenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CadenaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_CadenaActionPerformed
-
-    private void Btn_VerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_VerificarActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel TableModel = new DefaultTableModel();
-        String Header[] = {"Pila", "Entrada", "Salida"};
-        TableModel.setColumnIdentifiers(Header);
-        //tablaM.getTablaM().forEach((k, v) -> System.out.println("Key: " + k + ": Value: " + v));
-        if (!Cadena.getText().equals("")) {
-            String check = Cadena.getText() + "$";
-            Stack<String> stack = new Stack<String>();
-            stack.push("$");
-            stack.push(S);
-            String X, a;
-            do {
-                a = check.charAt(0) + "";
-                X = stack.peek();
-                System.out.println("X: " + X + " a: " + a);
-                if (esTerminal(X + "") || X.equals('$')) {
-                    if (X.equals(a)) {
-                        // System.out.println(stack);
-                        //System.out.println(check);
-                        TableModel.addRow(new Object[]{getStack(stack), check, " "});
+        Stack<String> stack = new Stack<String>();
+        stack.push("$");
+        stack.push(S);
+        String X, a;
+        do {
+            a = check.charAt(0) + "";
+            X = stack.peek();
+            if (esTerminal(X + "") || X.equals('$')) {
+                if (X.equals(a)) {
+                    TableModel.addRow(new Object[]{getStack(stack), check, " "});
+                    stack.pop();
+                    check = check.substring(1);
+                } else {
+                    TableModel.addRow(new Object[]{getStack(stack), check, "Error"});
+                    JOptionPane.showMessageDialog(null, "Error, cadena invalida",
+                            "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+//                    TableModel = new DefaultTableModel();
+//                    TableModel.setColumnIdentifiers(Header);
+                    break;
+                }
+            } else {
+                HashMap<String, String> Hash = tablaM.getTablaM().get(X + "");
+                String Prod = Hash.get(a + "");
+                if (Prod == null) {
+                    TableModel.addRow(new Object[]{getStack(stack), check, "Error"});
+                    JOptionPane.showMessageDialog(null, "Error, cadena invalida",
+                            "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                TableModel.addRow(new Object[]{getStack(stack), check, Prod});
+                if (!Prod.equals("")) {
+                    String f = Prod.charAt(0) + "";
+                    if (f.equals(X) || (f.concat("'").equals(X))) {
                         stack.pop();
-                        check = check.substring(1);
+                        String p;
+                        String h = Prod.charAt(1) + "";
+                        if (h.equals("'")) {
+                            p = Prod.substring(4);
+                        } else {
+                            p = Prod.substring(3);
+                        }
+                        boolean sw = true;
+                        if (!p.equals("&")) {
+                            for (int i = p.length() - 1; i >= 0; i--) {
+                                String comp = p.charAt(i) + "";
+                                if (comp.equals("'")) {
+                                    sw = false;
+                                } else if (sw == false) {
+                                    stack.push(p.charAt(i) + "'");
+                                    sw = true;
+                                } else {
+                                    stack.push(p.charAt(i) + "");
+                                }
+                            }
+                        }
                     } else {
+                        TableModel.addRow(new Object[]{getStack(stack), check, "Error"});
                         JOptionPane.showMessageDialog(null, "Error, cadena invalida",
                                 "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
-                        TableModel = new DefaultTableModel();
-                        TableModel.setColumnIdentifiers(Header);
+//                        TableModel = new DefaultTableModel();
+//                        TableModel.setColumnIdentifiers(Header);
                         break;
                     }
                 } else {
-                    HashMap<String, String> Hash = tablaM.getTablaM().get(X + "");
-                    //System.out.println(Hash);
-                    String Prod = Hash.get(a + "");
-                    //System.out.println(stack);
-                    //System.out.println(check);
-                    TableModel.addRow(new Object[]{getStack(stack), check, Prod});
-                    //System.out.println(Prod);
-                    if (!Prod.equals("")) {
-                        String f = Prod.charAt(0) + "";
-                        if (f.equals(X) || (f.concat("'").equals(X))) {
-                            stack.pop();
-                            String p;
-                            String h = Prod.charAt(1) + "";
-                            if (h.equals("'")) {
-                                p = Prod.substring(4);
-                            } else {
-                                p = Prod.substring(3);
-                            }
-                            boolean sw = true;
-                            if (!p.equals("&")) {
-                                for (int i = p.length() - 1; i >= 0; i--) {
-                                    String comp = p.charAt(i) + "";
-                                    if (comp.equals("'")) {
-                                        sw = false;
-                                    } else if (sw == false) {
-                                        stack.push(p.charAt(i) + "'");
-                                        sw = true;
-                                    } else {
-                                        stack.push(p.charAt(i) + "");
-                                    }
-                                }
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Error, cadena invalida",
-                                    "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
-                            TableModel = new DefaultTableModel();
-                            TableModel.setColumnIdentifiers(Header);
-                            break;
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Error, cadena invalida",
-                                "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
-                        TableModel = new DefaultTableModel();
-                        TableModel.setColumnIdentifiers(Header);
-                        break;
-                    }
+                    TableModel.addRow(new Object[]{getStack(stack), check, "Error"});
+                    JOptionPane.showMessageDialog(null, "Error, cadena invalida",
+                            "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+//                    TableModel = new DefaultTableModel();
+//                    TableModel.setColumnIdentifiers(Header);
+                    break;
                 }
-            } while (!X.equals("$"));
+            }
+        } while (!X.equals("$"));
 
-            JTable.setModel(TableModel);
+        if (X.equals("$") && stack.empty()) {
+            JOptionPane.showMessageDialog(null, "Cadena valida",
+                    "Exito", JOptionPane.INFORMATION_MESSAGE);
         }
-
-    }//GEN-LAST:event_Btn_VerificarActionPerformed
+        JTable.setModel(TableModel);
+    }
 
     private boolean esTerminal(String cadena) {
-        return Pattern.matches("[A-Z]'*", cadena) ? false : true;
+        return Pattern.matches("[A-Z]", cadena) ? false : true;
     }
 
     public String getStack(Stack<String> S) {
@@ -519,7 +548,6 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTable JTable;
     private javax.swing.JButton escogerGram;
     private javax.swing.JLabel gramOriginal;
-    private javax.swing.JLabel gramaticaSV;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -527,7 +555,10 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel primYSigte;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JLabel tituloGram;
     // End of variables declaration//GEN-END:variables
 }

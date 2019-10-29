@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class Siguiente {
 
     private HashMap<String, Set<String>> siguientes;
-    private HashMap<String, String> producciones;
+    private HashMap<String, ArrayList<String>> producciones;
     private ArrayList<String> noTerminales;
     private HashMap<String, Set<String>> nTSiguientes;
 
@@ -64,7 +64,7 @@ public class Siguiente {
     private void construirSiguiente(GSVicio gSVicio, Primero primeros) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
             for (String noTermAux : gSVicio.getNoTerminales()) {
-                String[] producciones = gSVicio.getProducciones().get(noTermAux).split(" ");
+                ArrayList<String> producciones = gSVicio.getProducciones().get(noTermAux);
                 for (String produccion : producciones) {
                     Set<String> prodConstr = construirProducciones(produccion, noTerminal, noTermAux, primeros);
                     if (!prodConstr.isEmpty()) {

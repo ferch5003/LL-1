@@ -20,7 +20,7 @@ public class GSVicio {
     private ArrayList<String> terminales;
     private ArrayList<String> noTerminales;
     private String nTInicial;
-    private HashMap<String, String> producciones;
+    private HashMap<String, ArrayList<String>> producciones;
 
     public GSVicio(Gramatica gramatica) {
         this.terminales = gramatica.getTerminales();
@@ -28,12 +28,11 @@ public class GSVicio {
         this.noTerminales = gramatica.getNoTerminales();
         this.producciones = new HashMap<>();
 
-        gramatica.getProducciones().forEach((noTerminal, produccionesNT) -> {
-            String[] producciones = produccionesNT.split(" ");
+        gramatica.getProducciones().forEach((noTerminal, producciones) -> {
             if (esRecursivo(noTerminal, producciones)) {
                 quitarRecursividad(noTerminal, producciones);
             } else {
-                this.producciones.put(noTerminal, produccionesNT);
+                this.producciones.put(noTerminal, producciones);
             }
         });
 
@@ -55,7 +54,7 @@ public class GSVicio {
     private void construirTerminales() {
         this.terminales = new ArrayList<>();
         for (String noTerminal : this.noTerminales) {
-            String[] gramatica = this.producciones.get(noTerminal).split(" ");
+            ArrayList<String> gramatica = this.producciones.get(noTerminal);
             for (String expresion : gramatica) {
                 String cadenaTerminales = expresion.replaceAll("([A-Z]'*)", "");
                 for (int i = 0; i < cadenaTerminales.length(); i++) {
@@ -68,10 +67,10 @@ public class GSVicio {
         }
     }
 
-    private boolean esRecursivo(String noTerminal, String[] producciones) {
+    private boolean esRecursivo(String noTerminal, ArrayList<String> producciones) {
         int i = 0;
-        while (i < producciones.length) {
-            if (producciones[i].substring(0, 1).equals(noTerminal)) {
+        while (i < producciones.size()) {
+            if (producciones.get(i).substring(0, 1).equals(noTerminal)) {
                 return true;
             }
             i++;
@@ -79,7 +78,7 @@ public class GSVicio {
         return false;
     }
 
-    private void quitarRecursividad(String A, String[] producciones) {
+    private void quitarRecursividad(String A, ArrayList<String> producciones) {
         ArrayList<String> alfa = new ArrayList<>();
         ArrayList<String> beta = new ArrayList<>();
         for (String produccion : producciones) {
@@ -95,16 +94,15 @@ public class GSVicio {
 
     private void asignarNRecursivos(String A, ArrayList<String> alfa, ArrayList<String> beta) {
         String AP = asignarNuevoNTerminal();
-        String noRA = "";
+        ArrayList<String> noRA = new ArrayList<>();
         for (String produccion : beta) {
-            noRA += produccion + AP + " ";
+            noRA.add(produccion + AP);
         }
-        noRA = noRA.substring(0, noRA.length() - 1);
-        String noRAP = "";
+        ArrayList<String> noRAP = new ArrayList<>();
         for (String produccion : alfa) {
-            noRAP += produccion + AP + " ";
+            noRAP.add(produccion + AP);
         }
-        noRAP += "&";
+        noRAP.add("&");
         this.producciones.put(A, noRA);
         this.producciones.put(AP, noRAP);
         int indiceA = this.noTerminales.indexOf(A);
@@ -114,9 +112,8 @@ public class GSVicio {
     private void llamadaFactorizacion() {
         boolean factorizado = false;
         for (String noTerminal : this.noTerminales) {
-            String produccionesNT = this.producciones.get(noTerminal);
+            ArrayList<String> producciones = this.producciones.get(noTerminal);
             Set<Integer> indicesFact = new HashSet<>();
-            String[] producciones = produccionesNT.split(" ");
             do {
                 indicesFact = esFactorizable(noTerminal, producciones);
                 if (!indicesFact.isEmpty()) {
@@ -136,17 +133,17 @@ public class GSVicio {
         }
     }
 
-    private Set<Integer> esFactorizable(String A, String[] producciones) {
+    private Set<Integer> esFactorizable(String A, ArrayList<String> producciones) {
         Set<Integer> indicesFact = new HashSet<>();
         int i = 0;
-        while (i < producciones.length) {
+        while (i < producciones.size()) {
             indicesFact.add(i);
-            for (int j = 0; j < producciones.length; j++) {
+            for (int j = 0; j < producciones.size(); j++) {
                 if (j == i) {
                     continue;
                 }
-                String primeroI = producciones[i].substring(0, 1);
-                String primeroJ = producciones[j].substring(0, 1);
+                String primeroI = producciones.get(i).substring(0, 1);
+                String primeroJ = producciones.get(j).substring(0, 1);
                 if (primeroI.equals(primeroJ)) {
                     indicesFact.add(j);
                 }
@@ -161,24 +158,24 @@ public class GSVicio {
         return indicesFact;
     }
 
-    private void factorizar(String A, String[] producciones, Set<Integer> indicesFact) {
+    private void factorizar(String A, ArrayList<String> producciones, Set<Integer> indicesFact) {
         Iterator iter = indicesFact.iterator();
         Integer primeraPos = (Integer) iter.next();
-        String primerProd = producciones[primeraPos];
+        String primerProd = producciones.get(primeraPos);
         String cadenaMax = "";
         int i = 0;
         boolean cadenaNoTer = true;
         while (cadenaNoTer) {
             int iguales = 0;
             for (Integer indice : indicesFact) {
-                if (i >= primerProd.length() || i >= producciones[indice].length()) {
+                if (i >= primerProd.length() || i >= producciones.get(indice).length()) {
                     break;
                 }
-                if (primerProd.equals(producciones[indice])) {
+                if (primerProd.equals(producciones.get(indice))) {
                     continue;
                 }
                 String compararP = primerProd.substring(0, i + 1);
-                String compararS = producciones[indice].substring(0, i + 1);
+                String compararS = producciones.get(indice).substring(0, i + 1);
                 if (compararP.equals(compararS)) {
                     iguales++;
                 }
@@ -193,22 +190,22 @@ public class GSVicio {
         asignarFactores(A, producciones, indicesFact, cadenaMax);
     }
 
-    private void asignarFactores(String A, String[] producciones, Set<Integer> indicesFact, String cadenaMax) {
+    private void asignarFactores(String A, ArrayList<String> producciones, Set<Integer> indicesFact, String cadenaMax) {
         String AP = asignarNuevoNTerminal();
-        String prodANueva = cadenaMax + AP;
-        String prodAPNueva = "";
-        for (int j = 0; j < producciones.length; j++) {
+        ArrayList<String> prodANueva = new ArrayList<>();
+        prodANueva.add(cadenaMax + AP);
+        ArrayList<String> prodAPNueva = new ArrayList<>();
+        for (int j = 0; j < producciones.size(); j++) {
             if (!indicesFact.contains(j)) {
-                prodANueva += " " + producciones[j];
+                prodANueva.add(producciones.get(j));
             } else {
-                producciones[j] = producciones[j].replace(cadenaMax, "");
-                if (producciones[j].equals("")) {
-                    producciones[j] = "&";
+                producciones.set(j, producciones.get(j).replace(cadenaMax, ""));
+                if (producciones.get(j).equals("")) {
+                    producciones.set(j, "&");
                 }
-                prodAPNueva += producciones[j] + " ";
+                prodAPNueva.add(producciones.get(j));
             }
         }
-        prodAPNueva = prodAPNueva.substring(0, prodAPNueva.length() - 1);
         this.producciones.put(A, prodANueva);
         this.producciones.put(AP, prodAPNueva);
         int indiceA = this.noTerminales.indexOf(A);
@@ -227,7 +224,7 @@ public class GSVicio {
         return nTInicial;
     }
 
-    public HashMap<String, String> getProducciones() {
+    public HashMap<String, ArrayList<String>> getProducciones() {
         return producciones;
     }
 

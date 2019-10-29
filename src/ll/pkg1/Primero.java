@@ -21,7 +21,7 @@ public class Primero {
 
     private HashMap<String, Set<String>> primeros;
     private HashMap<String, HashMap<String, Set<String>>> valoresM;
-    private HashMap<String, String> producciones;
+    private HashMap<String, ArrayList<String>> producciones;
     private ArrayList<String> noTerminales;
     private HashMap<String, Queue<String>> nTPrimeros;
 
@@ -60,7 +60,7 @@ public class Primero {
     private void construirValoresM(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
             HashMap<String, Set<String>> valor = new HashMap<>();
-            String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
+            ArrayList<String> producciones = gSVicio.getProducciones().get(noTerminal);
             for (String produccion : producciones) {
                 valor.put(produccion, new HashSet<>());
             }
@@ -82,7 +82,7 @@ public class Primero {
 
     private void construirPrimero(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
-            String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
+            ArrayList<String> producciones = gSVicio.getProducciones().get(noTerminal);
             for (String prod : producciones) {
                 calcularPrimero(noTerminal, prod);
             }
@@ -146,7 +146,7 @@ public class Primero {
     }
 
     private void agregarValorM(GSVicio gSVicio, String noTerminal, String produccion, Set<String> B) {
-        String[] producciones = gSVicio.getProducciones().get(noTerminal).split(" ");
+        ArrayList<String> producciones = gSVicio.getProducciones().get(noTerminal);
         for (String prod : producciones) {
             if (prod.contains(produccion)) {
                 this.valoresM.get(noTerminal).get(prod).addAll(B);
@@ -158,10 +158,9 @@ public class Primero {
         gSVicio.getProducciones().forEach((noTerminal, producciones) -> {
             int epsilon = 0;
             if (!producciones.contains("&")) {
-                String[] produccion = producciones.split(" ");
-                for (String prod : produccion) {
+                for (String prod : producciones) {
                     if (!esTerminal(prod.substring(0, 1))) {
-                        for (char a : producciones.toCharArray()) {
+                        for (char a : prod.toCharArray()) {
                             String simbolo = Character.toString(a);
                             if (!esTerminal(simbolo)) {
                                 if (this.primeros.get(simbolo).contains("&")) {

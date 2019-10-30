@@ -98,6 +98,9 @@ public class GSVicio {
         for (String produccion : beta) {
             noRA.add(produccion + AP);
         }
+        if(beta.isEmpty()){
+            noRA.add(AP);
+        }
         ArrayList<String> noRAP = new ArrayList<>();
         for (String produccion : alfa) {
             noRAP.add(produccion + AP);

@@ -30,7 +30,6 @@ public class Gramatica {
 
         String linea;
         while ((linea = gramatica.readLine()) != null) {
-            linea = linea.trim();
             buscarTerminales(linea);
             buscarNoTerminales(linea);
             buscarProducciones(linea);

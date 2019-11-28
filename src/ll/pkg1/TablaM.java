@@ -15,9 +15,7 @@ public class TablaM {
 
     private HashMap<String, HashMap<String, String>> tablaM;
 
-    public HashMap<String, HashMap<String, String>> getTablaM() {
-        return tablaM;
-    }
+    
 
     public TablaM(GSVicio gSVicio, Primero primeros, Siguiente siguientes) {
         this.tablaM = new HashMap<>();
@@ -26,7 +24,23 @@ public class TablaM {
 
         calcularTablaM(primeros, siguientes);
     }
+    
+    public void resultados() {
+        System.out.println("Tabla M:");
+        this.tablaM.forEach((noTerminal,conjunto)->{
+            System.out.println(noTerminal + ": " + conjunto);
+        });
+        System.out.println();
+    }
+    
+    public HashMap<String, HashMap<String, String>> getTablaM() {
+        return tablaM;
+    }
 
+    public String getTablaM(String noTerminal, String terminal) {
+        return tablaM.get(noTerminal).get(terminal);
+    }
+    
     private void construirTablaM(GSVicio gSVicio) {
         for (String noTerminal : gSVicio.getNoTerminales()) {
             this.tablaM.put(noTerminal, new HashMap<>());

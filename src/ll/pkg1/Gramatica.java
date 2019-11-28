@@ -6,7 +6,9 @@
 package ll.pkg1;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,11 +24,14 @@ public class Gramatica {
     private String nTInicial;
     private HashMap<String, ArrayList<String>> producciones;
 
-    public Gramatica(BufferedReader gramatica) throws FileNotFoundException, IOException {
+    public Gramatica(File archivo) throws FileNotFoundException, IOException {
 
         this.terminales = new ArrayList<>();
         this.noTerminales = new ArrayList<>();
         this.producciones = new HashMap<>();
+
+        FileReader fr = new FileReader(archivo);
+        BufferedReader gramatica = new BufferedReader(fr);
 
         String linea;
         while ((linea = gramatica.readLine()) != null) {
@@ -34,7 +39,24 @@ public class Gramatica {
             buscarNoTerminales(linea);
             buscarProducciones(linea);
         }
-        
+
+        this.nTInicial = this.noTerminales.get(0);
+    }
+
+    public Gramatica(String gramatica) throws FileNotFoundException, IOException {
+
+        this.terminales = new ArrayList<>();
+        this.noTerminales = new ArrayList<>();
+        this.producciones = new HashMap<>();
+
+        String[] lineas = gramatica.split("\n");
+
+        for (String linea : lineas) {
+            buscarTerminales(linea);
+            buscarNoTerminales(linea);
+            buscarProducciones(linea);
+        }
+
         this.nTInicial = this.noTerminales.get(0);
     }
 
@@ -54,6 +76,17 @@ public class Gramatica {
         return producciones;
     }
 
+    public void resultados() {
+        System.out.println("No Terminal inicial: " + this.nTInicial);
+        System.out.println("Terminales: " + this.terminales);
+        System.out.println("Terminales: " + this.noTerminales);
+        System.out.println("Producciones:\n");
+        this.producciones.forEach((noTerminal, produccion) -> {
+            System.out.println(noTerminal + "->" + produccion);
+        });
+        System.out.println();
+    }
+
     private void buscarTerminales(String linea) {
         int indiceProduce = linea.indexOf(">");
         String cadenaTerminales = linea.substring(indiceProduce + 1, linea.length());
@@ -67,20 +100,20 @@ public class Gramatica {
     }
 
     private void buscarNoTerminales(String linea) throws IOException {
-            int indiceNTerminal = linea.indexOf("-");
-            String cadenaNTerminales = linea.substring(0, indiceNTerminal);
-            if (!this.noTerminales.contains(cadenaNTerminales)) {
-                this.noTerminales.add(cadenaNTerminales);
-            }
+        int indiceNTerminal = linea.indexOf("-");
+        String cadenaNTerminales = linea.substring(0, indiceNTerminal);
+        if (!this.noTerminales.contains(cadenaNTerminales)) {
+            this.noTerminales.add(cadenaNTerminales);
+        }
     }
 
     private void buscarProducciones(String linea) throws IOException {
-            String[] expresiones = linea.split("->");
-            if (!this.producciones.containsKey(expresiones[0])) {
-                this.producciones.put(expresiones[0], new ArrayList<>());
-                this.producciones.get(expresiones[0]).add(expresiones[1]);
-            } else {
-                this.producciones.get(expresiones[0]).add(expresiones[1]);
-            }
+        String[] expresiones = linea.split("->");
+        if (!this.producciones.containsKey(expresiones[0])) {
+            this.producciones.put(expresiones[0], new ArrayList<>());
+            this.producciones.get(expresiones[0]).add(expresiones[1]);
+        } else {
+            this.producciones.get(expresiones[0]).add(expresiones[1]);
+        }
     }
 }

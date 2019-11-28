@@ -298,10 +298,7 @@ public class Interfaz extends javax.swing.JFrame {
         } else {
             try {
                 // Usar Archivo
-                FileReader fr = new FileReader(archivo);
-                BufferedReader br = new BufferedReader(fr);
-
-                Gramatica gramatica = new Gramatica(br);
+                Gramatica gramatica = new Gramatica(archivo);
                 // Imprimir gramatica
                 imprimirGramOriginal(gramatica);
                 GSVicio gSVicio = new GSVicio(gramatica);
@@ -394,10 +391,10 @@ public class Interfaz extends javax.swing.JFrame {
             fila[0] = noTerminal;
             int j = 1;
             for (String terminal : gSVicio.getTerminales()) {
-                fila[j] = tablaM.getTablaM().get(noTerminal).get(terminal);
+                fila[j] = tablaM.getTablaM(noTerminal, terminal);
                 j++;
             }
-            fila[fila.length - 1] = tablaM.getTablaM().get(noTerminal).get("$");
+            fila[fila.length - 1] = tablaM.getTablaM(noTerminal, "$");
             modeloTablaM.addRow(fila);
         }
         JTablaM.setModel(modeloTablaM);

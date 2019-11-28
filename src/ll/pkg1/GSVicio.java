@@ -41,10 +41,21 @@ public class GSVicio {
         construirTerminales();
     }
 
+    public void resultados() {
+        System.out.println("No Terminal inicial: " + this.nTInicial);
+        System.out.println("Terminales: " + this.terminales);
+        System.out.println("Terminales: " + this.noTerminales);
+        System.out.println("Producciones:\n");
+        this.producciones.forEach((noTerminal, produccion) -> {
+            System.out.println(noTerminal + "->" + produccion);
+        });
+        System.out.println();
+    }
+
     private String asignarNuevoNTerminal() {
         for (char A = 'A'; A <= 'Z'; A++) {
             String noTerminal = Character.toString(A);
-            if(!this.noTerminales.contains(noTerminal)){
+            if (!this.noTerminales.contains(noTerminal)) {
                 return noTerminal;
             }
         }
@@ -98,7 +109,7 @@ public class GSVicio {
         for (String produccion : beta) {
             noRA.add(produccion + AP);
         }
-        if(beta.isEmpty()){
+        if (beta.isEmpty()) {
             noRA.add(AP);
         }
         ArrayList<String> noRAP = new ArrayList<>();

@@ -34,6 +34,13 @@ public class Siguiente {
 
         calcularSiguiente(gSVicio);
     }
+    
+    public void resultados() {
+        this.siguientes.forEach((noTerminal, conjunto) -> {
+            System.out.println("SIGUIENTE(" + noTerminal + ") = " + conjunto);
+        });
+        System.out.println();
+    }
 
     public HashMap<String, Set<String>> getSiguientes() {
         return siguientes;

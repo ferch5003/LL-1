@@ -48,6 +48,13 @@ public class Primero {
 
         verifEpsilon(gSVicio);
     }
+    
+    public void resultados() {
+        this.primeros.forEach((noTerminal, conjunto) -> {
+            System.out.println("PRIMERO(" + noTerminal + ") = " + conjunto);
+        });
+        System.out.println();
+    }
 
     public HashMap<String, Set<String>> getPrimeros() {
         return primeros;

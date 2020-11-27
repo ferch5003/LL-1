@@ -79,7 +79,7 @@ public class Gramatica {
     public void resultados() {
         System.out.println("No Terminal inicial: " + this.nTInicial);
         System.out.println("Terminales: " + this.terminales);
-        System.out.println("Terminales: " + this.noTerminales);
+        System.out.println("No terminales: " + this.noTerminales);
         System.out.println("Producciones:\n");
         this.producciones.forEach((noTerminal, produccion) -> {
             System.out.println(noTerminal + "->" + produccion);
